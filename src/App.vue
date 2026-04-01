@@ -1,11 +1,17 @@
 <script setup></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="nav-and-main">
+    <nav>Nav</nav>
+
+    <main>Main</main>
+  </div>
+
+  <footer>Footer</footer>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .nav-and-main {
+    min-height: 100vh;
+  }
+</style>
