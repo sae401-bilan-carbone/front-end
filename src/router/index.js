@@ -15,7 +15,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/:locale(fr|en)',
+      path: '/:locale(fr|en)?',
       name: 'base',
       component: HomeView,
       children: [
@@ -42,11 +42,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const locale = to.params.locale
+  let locale = to.params.locale
 
-  if (!locale) return
+  if (!locale) {
+    locale = localStorage.getItem('locale') || 'fr'
+    return `/${locale}${to.path}`
+  }
 
-  if (!['fr', 'en'].includes(locale)) return '/fr'
+  if (!['fr', 'en'].includes(locale)) {
+    return '/fr'
+  }
 
   i18n.global.locale.value = locale
   localStorage.setItem('locale', locale)
