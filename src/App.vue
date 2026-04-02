@@ -4,7 +4,9 @@
   <div class="nav-and-main">
     <nav>Nav</nav>
 
-    <main>Main</main>
+    <main>
+      <routerView />
+    </main>
   </div>
 
   <footer>Footer</footer>
