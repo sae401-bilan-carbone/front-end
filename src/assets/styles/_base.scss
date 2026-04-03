@@ -1,0 +1,38 @@
+@use "variables" as *;
+
+// Reset de base pour s'assurer que les marges ne parasitent pas le design
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  // On utilise une valeur par défaut si $lh-base n'est pas défini
+  line-height: 1.5; 
+  color: $gray-900;
+  background-color: $white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-title;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  margin-bottom: $space-md;
+  color: $primary-color; // Optionnel : pour que tes titres soient verts par défaut
+}
+
+// Optionnel : un petit style propre pour les liens
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s;
+  
+  &:hover {
+    color: $primary-color;
+  }
+}

@@ -1,0 +1,9 @@
+/* 1. Les @use TOUJOURS en premier */
+@use "variables" as *;
+@use "mixins" as *;
+@use "base";
+
+/* 2. Les imports externes et autres règles ensuite */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap');
+
+// Ici, tes utilitaires globaux...

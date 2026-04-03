@@ -1,0 +1,60 @@
+// -----------------------------------------------------------------------------
+// DESIGN TOKENS
+// -----------------------------------------------------------------------------
+
+// 1. COLORS
+// J'ai rajouté les suffixes "-color" pour correspondre à tes appels dans les composants
+$primary-light: #90EE90;
+$primary-color: #008000; 
+$primary-dark:  #006400;
+
+// Neutres (Grays)
+$white:         #ffffff;
+$gray-100:      #f3f4f6;
+$gray-200:      #e5e7eb;
+$gray-500:      #6b7280;
+$gray-900:      #111827;
+$black:         #000000;
+
+// 2. TYPOGRAPHY
+$font-family-title: 'Montserrat', sans-serif;
+$font-family-base:  'Open Sans', sans-serif;
+
+$font-size-xs:   0.75rem;   // 12px
+$font-size-sm:   0.875rem;  // 14px
+$font-size-base: 1rem;      // 16px
+$font-size-md:   1.125rem;  // 18px
+$font-size-xl:   1.25rem;   // 20px
+$font-size-2xl:  1.5rem;    // 24px
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold:   700;
+
+// 3. SPACING
+$space-xs: 0.25rem; // 4px
+$space-sm: 0.5rem;  // 8px
+$space-md: 1rem;    // 16px
+$space-lg: 1.5rem;  // 24px
+$space-xl: 2rem;    // 32px
+
+// 4. BORDERS & SHADOWS
+$radius-sm:   0.125rem;
+$radius-md:   0.375rem;
+$radius-lg:   0.5rem;
+$radius-full: 9999px;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+// 5. BREAKPOINTS (Utile pour @media (min-width: $breakpoint-md))
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// 6. Z-INDEX
+$z-dropdown: 1000;
+$z-sticky:   1020;
+$z-modal:    1050;
+$z-tooltip:  1080;
