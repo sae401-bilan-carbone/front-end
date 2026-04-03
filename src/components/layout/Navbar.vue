@@ -1,7 +1,7 @@
 <template>
   <ul>
     <li>
-      <routerLink :to="{ name: 'home' }">Accueil</routerLink>
+      <routerLink :to="{ name: 'landing' }">Landing</routerLink>
     </li>
   </ul>
 </template>
