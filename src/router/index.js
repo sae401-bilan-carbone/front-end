@@ -3,6 +3,7 @@ import Error404View from '../views/errors/Error404View.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { i18n } from '../i18n'
 import DashboardView from '../views/DashboardView.vue'
+import SignUpView from '@/views/SignUpView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -36,6 +37,11 @@ const router = createRouter({
           path: 'landing',
           name: 'landing',
           component: LandingView
+        },
+        {
+          path: 'signup',
+          name: 'signup',
+          component: SignUpView
         },
         {
           path: '404',
