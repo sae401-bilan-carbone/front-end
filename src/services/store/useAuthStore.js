@@ -41,12 +41,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function signup(email, password) {
+  async function signup(email, password, name) {
     loading.value = true
     error.value = null
 
     try {
-      await AuthApi.signup(email, password)
+      await AuthApi.signup(email, password, name)
       const data = await AuthApi.getMe()
       user.value = data
     

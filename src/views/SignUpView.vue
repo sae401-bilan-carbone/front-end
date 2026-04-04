@@ -16,12 +16,14 @@ import { ref } from 'vue'
   const form = ref({
     email: '',
     password: '',
+    name: '',
     acceptPrivacy: false
   })
 
   const errors = ref({
     email: null,
     password: null,
+    name: null,
     acceptPrivacy: null
   })
 
@@ -45,6 +47,14 @@ import { ref } from 'vue'
       isValid = false
     }
 
+    if (!form.value.name?.trim()) {
+      errors.value.name = 'Requis'
+      isValid = false
+    } else if (form.value.name.length < 4) {
+      errors.value.name = 'Au moins 4 caractères'
+      isValid = false
+    }
+
     if (!form.value.acceptPrivacy) {
       errors.value.acceptPrivacy = 'Requis'
       isValid = false
@@ -61,7 +71,7 @@ import { ref } from 'vue'
     loading.value = true
 
     try {
-      await authStore.signup(email.value, password.value)
+      await authStore.signup(form.value.email, form.value.password, form.value.name)
       router.push('dashboard')
     
     } catch (e) {
@@ -102,6 +112,17 @@ import { ref } from 'vue'
         :disabled="loading"
       >
       <p class="error">{{ errors.password }}</p>
+    </div>
+
+    <div>
+      <label for="password">Name</label>
+      <input 
+        v-model="form.name" 
+        type="text" 
+        id="name"
+        :disabled="loading"
+      >
+      <p class="error">{{ errors.name }}</p>
     </div>
 
     <div>
