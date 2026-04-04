@@ -71,6 +71,8 @@
           : "Valider"
       }}
     </button>
+
+    <RouterLink :to="{ name: 'profile' }">Annuler</RouterLink>
   </form>
 </template>
 

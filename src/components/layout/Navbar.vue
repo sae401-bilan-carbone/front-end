@@ -1,3 +1,19 @@
+<script setup>
+  import { useAuthStore } from '@/services/store/useAuthStore'
+  import { useRouter } from 'vue-router'
+  import { ref } from 'vue'
+
+  const router = useRouter()
+  const authStore = useAuthStore()
+  const isMenuOpen = ref(false)
+  const isActivitiesOpen = ref(false)
+
+  async function handleDisconnect() {
+    await authStore.logout()
+    router.push('landing')
+  }
+</script>
+
 <template>
   <header class="header">
     <div class="header__container">
@@ -11,9 +27,11 @@
         <router-link to="/">VESTA</router-link>
       </div>
 
-      <router-link :to="{ name: 'signin' }" class="btn-primary">
-        Connexion
+      <router-link v-if="authStore.user" :to="{ name: 'profile' }">
+        <img :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" :alt="`${authStore.user.name}_profile_picture`">
       </router-link>
+
+      <router-link v-else :to="{ name: 'signin' }" class="btn-primary">Connexion</router-link>
     </div>
 
     <Transition name="fade">
@@ -51,7 +69,9 @@
 
             <router-link to="/assistance" class="small-link" @click="isMenuOpen = false">Assistance</router-link>
             <router-link to="/mentions-legales" class="small-link" @click="isMenuOpen = false">Mentions légales</router-link>
-            <router-link to="/register" class="small-link" @click="isMenuOpen = false">S'inscrire</router-link>
+
+            <button v-if="authStore.user" @click="handleDisconnect">Déconnexion</button>
+            <router-link v-else :to="{ name: 'signin' }" class="small-link" @click="isMenuOpen = false">Connexion</router-link>
           </nav>
         </div>
       </div>
@@ -59,16 +79,11 @@
   </header>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
-const isMenuOpen = ref(false);
-const isActivitiesOpen = ref(false);
-</script>
-
 <style lang="scss" scoped>
-// Note : Les variables $white, $gray-200, $primary-light, etc. 
-// sont injectées via vite.config.js ou importées manuellement.
+img {
+  width: 30px; 
+  border-radius: 999px;
+}
 
 .header {
   height: 60px;

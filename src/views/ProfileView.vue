@@ -12,6 +12,8 @@
 </script>
 
 <template>
+  <h1>Profil</h1>
+
   <div v-if="authStore.loading">
     <p>Chargement...</p>
   </div>
