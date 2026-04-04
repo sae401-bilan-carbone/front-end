@@ -6,6 +6,7 @@ import DashboardView from '../views/DashboardView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import HttpClient from '@/services/api/HttpClient'
 import SignInView from '@/views/SignInView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -34,6 +35,12 @@ const router = createRouter({
       path: `${baseUrl}/dashboard`,
       name: 'dashboard2',
       component: DashboardView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: `${baseUrl}/profile`,
+      name: 'profile',
+      component: ProfileView,
       meta: { requiresAuth: true }
     },
     {

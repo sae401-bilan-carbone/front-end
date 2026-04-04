@@ -17,9 +17,9 @@
   </div>
   
   <div v-else>
-    <h1>Dashboard de {{ authStore.user?.email }}</h1>
+    <h1>Profil de {{ authStore.user?.email }}</h1>
 
-    <RouterLink to="profile">Profil</RouterLink><br>
+    <RouterLink to="dashboard">Dashboard</RouterLink><br>
 
     <button @click="handleDisconnect">
       Déconnexion
