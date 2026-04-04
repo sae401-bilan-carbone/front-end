@@ -1,11 +1,6 @@
-<!--
-  Revoir : 
-  - Règles de validation
--->
-
 <script setup>
   import { useAuthStore } from '@/services/store/useAuthStore'
-import { ref } from 'vue' 
+import { ref } from 'vue'
   import { useRouter } from 'vue-router'
 
   const router = useRouter()
@@ -15,23 +10,21 @@ import { ref } from 'vue'
 
   const form = ref({
     email: '',
-    password: '',
-    acceptPrivacy: false
+    password: ''
   })
 
   const errors = ref({
     email: null,
-    password: null,
-    acceptPrivacy: null
+    password: null
   })
 
   function validateForm() {
-    errors.value = { email: null, password: null, acceptPrivacy: null }
+    errors.value = { email: null, password: null }
     let isValid = true
 
     if (!form.value.email?.trim()) {
       errors.value.email = 'Requis'
-      isValid = false
+      isValid = false 
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
       errors.value.email = "Invalide"
       isValid = false
@@ -39,14 +32,6 @@ import { ref } from 'vue'
 
     if (!form.value.password?.trim()) {
       errors.value.password = 'Requis'
-      isValid = false
-    } else if (form.value.password.length < 4) {
-      errors.value.password = 'Au moins 4 caractères'
-      isValid = false
-    }
-
-    if (!form.value.acceptPrivacy) {
-      errors.value.acceptPrivacy = 'Requis'
       isValid = false
     }
 
@@ -58,16 +43,16 @@ import { ref } from 'vue'
 
     if (!validateForm()) return
 
-    loading.value = true
+    loading.value = false
 
     try {
-      await authStore.signup(email.value, password.value)
+      await authStore.signin(email.value, password.value)
       router.push('dashboard')
     
     } catch (e) {
-      if (e.data.emailError) errors.value.email = "Email déjà utilisé"
-      else globalError.value = "Erreur interne. Veuillez réessayer."
-
+      errors.value.email = "Email ou mot de passe invalide"
+      errors.value.password = "Email ou mot de passe invalide"
+    
     } finally {
       loading.value = false
     }
@@ -75,19 +60,19 @@ import { ref } from 'vue'
 </script>
 
 <template>
-  <h1>Inscription</h1>
+  <h1>Connexion</h1>
 
   <div v-if="globalError" class="error">
     <p>{{ globalError }}</p>
   </div>
-
+  
   <form @submit.prevent="handleSubmit">
     <div>
       <label for="email">Email</label>
       <input 
-        v-model="form.email" 
-        type="email" 
+        type="email"
         id="email"
+        v-model="form.email"
         :disabled="loading"
       >
       <p class="error">{{ errors.email }}</p>
@@ -96,37 +81,26 @@ import { ref } from 'vue'
     <div>
       <label for="password">Mot de passe</label>
       <input 
-        v-model="form.password" 
-        type="password" 
+        type="password"
         id="password"
+        v-model="form.password"
         :disabled="loading"
       >
       <p class="error">{{ errors.password }}</p>
     </div>
 
-    <div>
-      <label for="privacy">J'accepte la <RouterLink to="privacy">politique de confidentialité des données</RouterLink></label>
-      <input 
-        v-model="form.acceptPrivacy" 
-        type="checkbox" 
-        id="privacy"
-        :disabled="loading"
-      >
-      <p class="error">{{ errors.acceptPrivacy }}</p>
-    </div>
-
     <button type="submit">
-      {{
-        loading
-          ? "Inscription en cours..."
-          : "S'inscrire"
+      {{ 
+        loading 
+          ? "Connexion en cours"
+          : "Se connecter"
       }}
     </button>
 
     <div>
       <p>
-        Vous avez déjà un compte ? 
-        <RouterLink to="signin">Connectez-vous</RouterLink>
+        Pas encore de compte ? 
+        <RouterLink to="signup">Inscrivez-vous</RouterLink>
       </p>
     </div>
   </form>

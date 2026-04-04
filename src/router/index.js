@@ -5,6 +5,7 @@ import { i18n } from '../i18n'
 import DashboardView from '../views/DashboardView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import HttpClient from '@/services/api/HttpClient'
+import SignInView from '@/views/SignInView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -44,15 +45,11 @@ const router = createRouter({
           name: 'signup',
           component: SignUpView
         },
-        
-        
         {
           path: 'signin',
           name: 'signin',
-          component: SignUpView 
+          component: SignInView
         },
-
-
         {
           path: '404',
           name: 'not-found',

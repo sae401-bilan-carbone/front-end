@@ -1,11 +1,23 @@
+<script setup>
+  import { useAuthStore } from '@/services/store/useAuthStore'
+  import { useRouter } from 'vue-router'
+
+  const authStore = useAuthStore()
+  const router = useRouter()
+
+  function handleDisconnect() {
+    authStore.logout()
+    router.push('landing')
+  }
+</script>
+
 <template>
-  <h1>Dashboard</h1>
+  <h1>Welcome {{ authStore.user?.email }}</h1>
+
+  <button @click="handleDisconnect">
+    Déconnexion
+  </button>
 </template>
 
 <style lang="scss" scoped>
-// Ton code SCSS spécifique au composant ici
-.layout-container {
-  display: flex;
-  background-color: $primary-color; // Si tu as configuré l'auto-import
-}
 </style>
