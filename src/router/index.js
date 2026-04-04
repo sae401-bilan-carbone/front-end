@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { i18n } from '../i18n'
 import DashboardView from '../views/DashboardView.vue'
 import SignUpView from '@/views/SignUpView.vue'
+import HttpClient from '@/services/api/HttpClient'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -43,6 +44,15 @@ const router = createRouter({
           name: 'signup',
           component: SignUpView
         },
+        
+        
+        {
+          path: 'signin',
+          name: 'signin',
+          component: SignUpView 
+        },
+
+
         {
           path: '404',
           name: 'not-found',
@@ -80,10 +90,10 @@ router.beforeEach((to, from) => {
 
   // Auth
 
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const token = localStorage.getItem('token')
+  const isProtected = to.matched.some(record => record.meta.requiresAuth)
+  const isAuthenticated = HttpClient.getToken()
 
-  if (requiresAuth && !token) {
+  if (isProtected && !isAuthenticated) {
     return { 
       name: 'landing', 
       params: { locale },

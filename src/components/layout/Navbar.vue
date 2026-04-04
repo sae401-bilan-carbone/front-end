@@ -11,7 +11,7 @@
         <router-link to="/">VESTA</router-link>
       </div>
 
-      <router-link to="/register" class="btn-primary">
+      <router-link to="signup" class="btn-primary">
         S'inscrire
       </router-link>
     </div>
