@@ -11,8 +11,8 @@
         <router-link to="/">VESTA</router-link>
       </div>
 
-      <router-link to="signup" class="btn-primary">
-        S'inscrire
+      <router-link :to="{ name: 'signin' }" class="btn-primary">
+        Connexion
       </router-link>
     </div>
 

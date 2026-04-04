@@ -5,8 +5,8 @@
   const authStore = useAuthStore()
   const router = useRouter()
 
-  function handleDisconnect() {
-    authStore.logout()
+  async function handleDisconnect() {
+    await authStore.logout()
     router.push('landing')
   }
 </script>

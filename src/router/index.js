@@ -9,6 +9,7 @@ import SignInView from '@/views/SignInView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
+const baseUrl = `/:locale(fr|en)`
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,44 +22,37 @@ const router = createRouter({
       }
     },
     {
-      path: '/:locale(fr|en)?',
-      children: [
-        {
-          path: '',
-          name: 'dashboard',
-          component: DashboardView,
-          meta: { requiresAuth: true }
-        },
-        {
-          path: 'dashboard',
-          name: 'dashboard2',
-          component: DashboardView,
-          meta: { requiresAuth: true }
-        },
-        {
-          path: 'landing',
-          name: 'landing',
-          component: LandingView
-        },
-        {
-          path: 'signup',
-          name: 'signup',
-          component: SignUpView
-        },
-        {
-          path: 'signin',
-          name: 'signin',
-          component: SignInView
-        },
-        {
-          path: '404',
-          name: 'not-found',
-          component: Error404View
-        }
-      ]
+      path: baseUrl,
+      name: 'base',
+      component: () => Promise.resolve(
+        HttpClient.getToken()
+          ? DashboardView 
+          : LandingView
+      )
     },
     {
-      path: '/:locale(fr|en)/404',
+      path: `${baseUrl}/dashboard`,
+      name: 'dashboard2',
+      component: DashboardView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: `${baseUrl}/landing`,
+      name: 'landing',
+      component: LandingView
+    },
+    {
+      path: `${baseUrl}/signup`,
+      name: 'signup',
+      component: SignUpView
+    },
+    {
+      path: `${baseUrl}/signin`,
+      name: 'signin',
+      component: SignInView
+    },
+    {
+      path: `${baseUrl}/not-found`,
       name: 'not-found',
       component: Error404View
     },
