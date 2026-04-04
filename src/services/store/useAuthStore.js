@@ -23,6 +23,42 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function signin(email, password) {
+    loading.value = true
+    error.value = null
+
+    try {
+      await AuthApi.signin(email, password) 
+      const data = await AuthApi.getMe()
+      user.value = data
+    
+    } catch(e) {
+      error.value = e.message
+      throw e
+    
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function signup(email, password) {
+    loading.value = true
+    error.value = null
+
+    try {
+      await AuthApi.signup(email, password)
+      const data = await AuthApi.getMe()
+      user.value = data
+    
+    } catch (e) {
+      error.value = e.message
+      throw e
+
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function logout() {
     AuthApi.logout()
     user.value = null
@@ -35,7 +71,9 @@ export const useAuthStore = defineStore('auth', () => {
     loading, 
     error, 
     initAuth, 
-    logout, 
+    signin,
+    signup,
+    logout,  
     isAuthenticated 
   }
 })

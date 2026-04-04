@@ -12,7 +12,7 @@ class AuthApi {
   }
 
   async signin(email, password) {
-    const data = await HttpClient.post('/signin', { email, password })
+    const data = await HttpClient.post('/login', { email, password })
 
     if (data.token) {
       localStorage.setItem('auth_token', data.token)

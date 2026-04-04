@@ -1,7 +1,4 @@
 import config from '../../config/config'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 class HttpClient {
   constructor(baseUrl = config.API_BASE)  {
@@ -37,8 +34,7 @@ class HttpClient {
     const response = await fetch(url, config)
 
     if (response.status === 401) {
-      localStorage.removeItem('auth_token')
-      router.push({ name: 'signin' })
+      // localStorage.removeItem('auth_token')
     }
 
     const data = await response.json()
@@ -57,8 +53,7 @@ class HttpClient {
     return this.request(
       endpoint,
       {
-        method: 'GET',
-        body: JSON.stringify(body)
+        method: 'GET'
       }
     )
   }
