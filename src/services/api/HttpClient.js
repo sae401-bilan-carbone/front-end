@@ -78,6 +78,16 @@ class HttpClient {
     )
   }
 
+  patch(endpoint, body) {
+    return this.request(
+      endpoint,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(body)
+      }
+    )
+  }
+
   delete(endpoint) {
     return this.request(
       endpoint,

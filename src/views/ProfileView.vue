@@ -17,9 +17,12 @@
   </div>
   
   <div v-else>
-    <h1>Profil de {{ authStore.user?.email }}</h1>
+    <div><b>Nom : </b>{{ authStore.user?.name }}</div>
 
-    <RouterLink to="dashboard">Dashboard</RouterLink><br>
+    <div>
+      <RouterLink :to="{ name: 'edit-profile' }">Modifier</RouterLink><br>
+      <RouterLink :to="{ name: 'dashboard' }">Dashboard</RouterLink><br>
+    </div>
 
     <button @click="handleDisconnect">
       Déconnexion

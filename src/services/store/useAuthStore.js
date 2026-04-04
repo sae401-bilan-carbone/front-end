@@ -23,6 +23,21 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function editProfile(name) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const data = await AuthApi.patchMe(name)
+      user.value = data.user
+    } catch (e) {
+      error.value = e.message
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function signin(email, password) {
     loading.value = true
     error.value = null
@@ -31,11 +46,9 @@ export const useAuthStore = defineStore('auth', () => {
       await AuthApi.signin(email, password) 
       const data = await AuthApi.getMe()
       user.value = data
-    
     } catch(e) {
       error.value = e.message
       throw e
-    
     } finally {
       loading.value = false
     }
@@ -49,11 +62,9 @@ export const useAuthStore = defineStore('auth', () => {
       await AuthApi.signup(email, password, name)
       const data = await AuthApi.getMe()
       user.value = data
-    
     } catch (e) {
       error.value = e.message
       throw e
-
     } finally {
       loading.value = false
     }
@@ -71,6 +82,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading, 
     error, 
     initAuth, 
+    editProfile,
     signin,
     signup,
     logout,  

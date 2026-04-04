@@ -17,7 +17,7 @@
   </div>
   
   <div v-else>
-    <h1>Dashboard de {{ authStore.user?.email }}</h1>
+    <h1>Dashboard de {{ authStore.user?.name }}</h1>
 
     <RouterLink to="profile">Profil</RouterLink><br>
 

@@ -7,6 +7,7 @@ import SignUpView from '@/views/SignUpView.vue'
 import HttpClient from '@/services/api/HttpClient'
 import SignInView from '@/views/SignInView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import EditProfileView from '@/views/profile/EditProfileView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -33,7 +34,7 @@ const router = createRouter({
     },
     {
       path: `${baseUrl}/dashboard`,
-      name: 'dashboard2',
+      name: 'dashboard',
       component: DashboardView,
       meta: { requiresAuth: true }
     },
@@ -41,6 +42,12 @@ const router = createRouter({
       path: `${baseUrl}/profile`,
       name: 'profile',
       component: ProfileView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: `${baseUrl}/profile/edit`,
+      name: 'edit-profile',
+      component: EditProfileView,
       meta: { requiresAuth: true }
     },
     {

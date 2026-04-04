@@ -73,11 +73,9 @@ import { ref } from 'vue'
     try {
       await authStore.signup(form.value.email, form.value.password, form.value.name)
       router.push('dashboard')
-    
     } catch (e) {
       if (e.data.emailError) errors.value.email = "Email déjà utilisé"
       else globalError.value = "Erreur interne. Veuillez réessayer."
-
     } finally {
       loading.value = false
     }

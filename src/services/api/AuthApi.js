@@ -25,6 +25,10 @@ class AuthApi {
     return await HttpClient.get('/me')
   }
 
+  async patchMe(name) {
+    return await HttpClient.patch('/me', { name })
+  }
+
   logout() {
     localStorage.removeItem('auth_token')
   }
