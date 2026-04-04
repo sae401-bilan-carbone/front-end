@@ -4,7 +4,8 @@
 -->
 
 <script setup>
-  import { ref } from 'vue'
+  import AuthApi from '@/services/api/AuthApi'
+  import { ref } from 'vue' 
   import { useRouter } from 'vue-router'
 
   const router = useRouter()
@@ -59,29 +60,12 @@
     loading.value = true
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: form.email.value,
-          password: form.password.value
-        })
-      })
-
-      const data = await res.json()
-      
-      if (!res.ok) {
-        globalError.value = data.message || "Erreur lors de l'inscription"
-        return
-      }
-      
-      router.push('/')
+      await AuthApi.signup(email.value, password.value)
+      router.push('/dashboard')
     
     } catch (e) {
-      console.error('API error:', e)
-      globalError.value = "Erreur interne. Veuillez réessayer."
+      if (e.data.emailError) errors.value.email = "Email déjà utilisé"
+      else globalError.value = "Erreur interne. Veuillez réessayer."
 
     } finally {
       loading.value = false
@@ -105,7 +89,7 @@
         id="email"
         :disabled="loading"
       >
-      <p class="error">{{ errors.password }}</p>
+      <p class="error">{{ errors.email }}</p>
     </div>
 
     <div>
