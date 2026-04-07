@@ -1,16 +1,23 @@
 <script setup>
   import { useAuthStore } from '@/services/store/useAuthStore'
-  import { useRouter } from 'vue-router'
-  import { ref } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
+  import { ref, computed } from 'vue'
 
   const router = useRouter()
+  const route = useRoute()
   const authStore = useAuthStore()
+  
   const isMenuOpen = ref(false)
   const isActivitiesOpen = ref(false)
 
+  // Logique dynamique pour le bouton du Header
+  // On vérifie si le nom de la route actuelle est 'signup'
+  const isSignUpPage = computed(() => route.name === 'signup')
+
   async function handleDisconnect() {
+    isMenuOpen.value = false
     await authStore.logout()
-    router.push('landing')
+    router.push({ name: 'landing' })
   }
 </script>
 
@@ -27,12 +34,34 @@
         <router-link to="/">VESTA</router-link>
       </div>
 
-      <router-link v-if="authStore.user" :to="{ name: 'profile' }">
-        <router-link :to="{ name: 'add-activity' }"><span class="material-symbols-outlined">add</span></router-link>
-        <img :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" :alt="`${authStore.user.name}_profile_picture`">
-      </router-link>
+      <div v-if="authStore.user" class="header__user-section">
+        <router-link :to="{ name: 'add-activity' }" class="icon-link">
+          <span class="material-symbols-outlined">add</span>
+        </router-link>
+        <router-link :to="{ name: 'profile' }" class="profile-link">
+          <img 
+            :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" 
+            :alt="`${authStore.user.name}_profile_picture`"
+          >
+        </router-link>
+      </div>
 
-      <router-link v-else :to="{ name: 'signup' }" class="btn-primary">S'inscrire</router-link>
+      <div v-else>
+        <router-link 
+          v-if="isSignUpPage" 
+          :to="{ name: 'signin' }" 
+          class="btn-primary"
+        >
+          Se connecter
+        </router-link>
+        <router-link 
+          v-else 
+          :to="{ name: 'signup' }" 
+          class="btn-primary"
+        >
+          S'inscrire
+        </router-link>
+      </div>
     </div>
 
     <Transition name="fade">
@@ -71,7 +100,7 @@
             <router-link to="/assistance" class="small-link" @click="isMenuOpen = false">Assistance</router-link>
             <router-link to="/mentions-legales" class="small-link" @click="isMenuOpen = false">Mentions légales</router-link>
 
-            <button v-if="authStore.user" @click="handleDisconnect">Déconnexion</button>
+            <button v-if="authStore.user" class="btn-logout" @click="handleDisconnect">Déconnexion</button>
             <router-link v-else :to="{ name: 'signin' }" class="small-link" @click="isMenuOpen = false">Connexion</router-link>
           </nav>
         </div>
@@ -81,10 +110,7 @@
 </template>
 
 <style lang="scss" scoped>
-img {
-  width: 30px; 
-  border-radius: 999px;
-}
+@use "@/assets/styles/variables" as *;
 
 .header {
   height: 60px;
@@ -99,6 +125,7 @@ img {
     padding: 0 $space-md;
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
 
   &__burger {
@@ -109,7 +136,7 @@ img {
     flex-direction: column;
     gap: 4px;
     padding: $space-sm;
-    margin-left: -$space-sm; // Aligne visuellement le burger au bord gauche
+    margin-left: -$space-sm;
     
     .burger-bar {
       width: 22px;
@@ -123,33 +150,59 @@ img {
     font-weight: $font-weight-bold;
     font-size: $font-size-xl;
     color: $primary-light;
-    margin-left: $space-sm; // Ajustement pour être proche du burger
-    flex-grow: 1; // Prend tout l'espace pour pousser le bouton S'inscrire à droite
+    flex-grow: 1;
+    margin-left: $space-sm;
     
     a {
       color: inherit;
       letter-spacing: 1px;
+      text-decoration: none;
+    }
+  }
+
+  &__user-section {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+
+    .icon-link {
+      color: $black;
+      display: flex;
+      align-items: center;
+    }
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid $gray-200;
     }
   }
 }
 
-// Bouton S'inscrire du Header
 .btn-primary {
-  background-color: rgba($primary-color, 0.6); 
+  background-color: rgba($primary-color, 0.8);
   color: $white;
-  padding: 6px 16px;
+  padding: 8px 16px;
   border-radius: $radius-sm;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
+  text-decoration: none;
   white-space: nowrap;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
-// Menu Mobile & Overlay
+// Mobile Menu
 .nav-mobile {
   position: fixed;
   top: 0;
   left: 0;
-  width: 75%; // 3/4 de l'écran
+  width: 280px;
   height: 100vh;
   background: $white;
   z-index: $z-modal + 1;
@@ -161,12 +214,12 @@ img {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     z-index: $z-modal;
   }
 
   &__content {
-    padding: $space-lg;
+    padding: $space-xl $space-lg;
     display: flex;
     flex-direction: column;
   }
@@ -174,11 +227,12 @@ img {
   &__close {
     background: none;
     border: none;
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     align-self: flex-start;
-    margin-bottom: $space-lg;
+    margin-bottom: $space-xl;
     cursor: pointer;
     line-height: 1;
+    color: $black;
   }
 
   &__links {
@@ -189,43 +243,48 @@ img {
     a, .dropdown-trigger {
       font-size: $font-size-md;
       color: $black;
-      text-align: left;
-      font-family: inherit;
       text-decoration: none;
+      font-family: $font-family-base;
     }
   }
 
   &__divider {
     border: none;
-    border-top: 1px solid rgba($black, 0.8);
-    margin: $space-xs 0;
-    width: 60%; // Ligne courte comme sur ton modèle
+    border-top: 1.5px solid $black;
+    margin: $space-sm 0;
+    width: 50px;
   }
 
   .small-link {
     font-size: $font-size-sm;
-    color: $gray-900;
+    color: $gray-500;
+  }
+
+  .btn-logout {
+    background: none;
+    border: none;
+    color: $danger;
+    text-align: left;
+    padding: 0;
+    font-size: $font-size-md;
+    cursor: pointer;
   }
 }
 
-// Dropdown & Flèche
+// Dropdown
 .dropdown-trigger {
   background: none;
   border: none;
   padding: 0;
   display: flex;
   align-items: center;
-  gap: 6px; // Flèche "collée" au texte
+  gap: 8px;
   cursor: pointer;
 
   .arrow {
-    font-size: 0.6rem;
-    transition: transform 0.3s ease;
-    margin-top: 2px;
-    
-    &--open {
-      transform: rotate(180deg);
-    }
+    font-size: 0.7rem;
+    transition: transform 0.3s;
+    &--open { transform: rotate(180deg); }
   }
 }
 
@@ -237,20 +296,13 @@ img {
   margin-top: $space-md;
 }
 
-// Animations (Vue Transitions)
-.slide-enter-active, .slide-leave-active { transition: transform 0.35s ease; }
+// Transitions
+.slide-enter-active, .slide-leave-active { transition: transform 0.3s ease; }
 .slide-enter-from, .slide-leave-to { transform: translateX(-100%); }
 
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 
-.expand-enter-active, .expand-leave-active { 
-  transition: all 0.3s ease; 
-  max-height: 200px; 
-  overflow: hidden; 
-}
-.expand-enter-from, .expand-leave-to { 
-  max-height: 0; 
-  opacity: 0; 
-}
+.expand-enter-active, .expand-leave-active { transition: all 0.3s ease; max-height: 150px; overflow: hidden; }
+.expand-enter-from, .expand-leave-to { max-height: 0; opacity: 0; }
 </style>

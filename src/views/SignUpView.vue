@@ -161,7 +161,7 @@ async function handleSubmit() {
 
       <p class="signin-link">
         Vous avez déjà un compte ?
-        <RouterLink :to="{ name: 'signin' }">Connectez-vous</RouterLink>
+        <RouterLink :to="{ name: 'signin' }">Connectez-vous !</RouterLink>
       </p>
     </div>
   </div>
