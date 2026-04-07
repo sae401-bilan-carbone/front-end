@@ -91,13 +91,17 @@ async function handleSubmit() {
 
 <style lang="scss" scoped>
 @use "@/assets/styles/variables" as *;
-.auth-page { display: flex; justify-content: center; align-items: center; padding: $space-lg; }
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $space-lg;
+}
 .auth-card { max-width: 420px; width: 100%; }
 .title { font-family: $font-family-title; font-size: $font-size-2xl; font-weight: $font-weight-bold; margin-bottom: $space-lg; }
 .social-grid { display: flex; flex-direction: column; gap: $space-sm; margin-bottom: $space-xl;
   .btn-social { display: flex; align-items: center; justify-content: center; gap: $space-md; padding: 12px; border: 1.5px solid $black; background: transparent; border-radius: $radius-md; font-family: $font-family-base; font-weight: $font-weight-medium; cursor: pointer;
-    &.apple-border { border-color: #0085FF; }
-  }
+}
 }
 .separator { display: flex; align-items: center; margin-bottom: $space-xl; font-size: 0.85rem;
   &::before, &::after { content: ""; flex: 1; height: 1px; background-color: $black; }
