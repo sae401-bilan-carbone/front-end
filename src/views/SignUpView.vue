@@ -50,6 +50,11 @@ function validateForm() {
     isValid = false
   }
 
+  if (!form.value.acceptPrivacy) {
+    errors.value.acceptPrivacy = 'Requis'
+    isValid = false
+  }
+
   return isValid
 }
 
@@ -73,7 +78,7 @@ async function handleSubmit() {
 <template>
   <div class="auth-page">
     <div class="auth-card">
-      <h1 class="title">S’inscrire gratuitement</h1>
+      <h1 class="title">S'inscrire gratuitement</h1>
 
       <p class="description">
         Suivez vos progrès et faites un geste pour la planète. 
@@ -82,15 +87,15 @@ async function handleSubmit() {
 
       <div class="social-grid">
         <button type="button" class="btn-social">
-          <IconGoogle :size="20" /> S’inscrire avec Google
+          <IconGoogle :size="20" /> S'inscrire avec Google
         </button>
         <button type="button" class="btn-social">
-          <IconApple :size="20" /> S’inscrire avec Apple
+          <IconApple :size="20" /> S'inscrire avec Apple
         </button>
       </div>
 
       <div class="separator">
-        <span>Ou bien s’inscrire avec une adresse e-mail</span>
+        <span>Ou bien s'inscrire avec une adresse e-mail</span>
       </div>
 
       <form @submit.prevent="handleSubmit" class="signup-form">
@@ -101,6 +106,7 @@ async function handleSubmit() {
             v-model="form.name" 
             type="text" 
             placeholder="Saisir votre nom"
+            :disabled="loading"
             :class="{ 'input-error': errors.name }"
           />
           <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
@@ -111,6 +117,7 @@ async function handleSubmit() {
             v-model="form.email" 
             type="email" 
             placeholder="Saisir une adresse e-mail"
+            :disabled="loading"
             :class="{ 'input-error': errors.email }"
           />
           <span v-if="errors.email" class="error-msg">{{ errors.email }}</span>
@@ -121,13 +128,27 @@ async function handleSubmit() {
             v-model="form.password" 
             type="password" 
             placeholder="Mot de passe"
+            :disabled="loading"
             :class="{ 'input-error': errors.password }"
           />
           <span v-if="errors.password" class="error-msg">{{ errors.password }}</span>
         </div>
 
+        <div class="form-group form-group--checkbox">
+          <label class="checkbox-label">
+            <input
+              v-model="form.acceptPrivacy"
+              type="checkbox"
+              :disabled="loading"
+            />
+            J'accepte la
+            <RouterLink to="/privacy">politique de confidentialité des données</RouterLink>
+          </label>
+          <span v-if="errors.acceptPrivacy" class="error-msg">{{ errors.acceptPrivacy }}</span>
+        </div>
+
         <button type="submit" class="btn-submit" :disabled="loading">
-          {{ loading ? "Chargement..." : "S’inscrire" }}
+          {{ loading ? "Chargement..." : "S'inscrire" }}
         </button>
       </form>
 
@@ -137,14 +158,16 @@ async function handleSubmit() {
         et notre 
         <RouterLink to="/privacy">politique de confidentialité</RouterLink>
       </p>
+
+      <p class="signin-link">
+        Vous avez déjà un compte ?
+        <RouterLink :to="{ name: 'signin' }">Connectez-vous</RouterLink>
+      </p>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-// L'auto-import doit être configuré dans vite.config.js
-// sinon ajoute @use "@/assets/styles/variables" as *;
-
 .auth-page {
   display: flex;
   justify-content: center;
@@ -218,7 +241,9 @@ async function handleSubmit() {
   .form-group {
     margin-bottom: $space-md;
 
-    input {
+    input[type='text'],
+    input[type='email'],
+    input[type='password'] {
       width: 100%;
       padding: 14px;
       border: 1.5px solid $black;
@@ -228,6 +253,7 @@ async function handleSubmit() {
 
       &.input-error { border-color: $danger; }
       &:focus { outline: 1px solid $primary-color; }
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
     }
 
     .error-msg {
@@ -236,16 +262,35 @@ async function handleSubmit() {
       margin-top: 4px;
       display: block;
     }
+
+    &--checkbox {
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: $space-sm;
+        font-size: $font-size-sm;
+        cursor: pointer;
+
+        input[type='checkbox'] {
+          accent-color: $primary-color;
+          width: 16px;
+          height: 16px;
+          flex-shrink: 0;
+        }
+
+        a { color: inherit; border-bottom: 1px solid $black; }
+      }
+    }
   }
 
   .btn-submit {
     width: 100%;
     padding: 14px;
-    background-color: $primary-light; // Le vert de ton image
+    background-color: $primary-light;
     color: $white;
     border: none;
     border-radius: $radius-md;
-    font-size: $font-size-lg;
+    font-size: $font-size-base;
     font-weight: $font-weight-medium;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -271,5 +316,14 @@ async function handleSubmit() {
   border-radius: $radius-sm;
   margin-bottom: $space-md;
   text-align: center;
+}
+
+.signin-link {
+  margin-top: $space-md;
+  font-size: $font-size-sm;
+  text-align: center;
+  color: $black;
+
+  a { color: $primary-color; font-weight: $font-weight-medium; }
 }
 </style>
