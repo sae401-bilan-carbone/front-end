@@ -8,6 +8,7 @@ import HttpClient from '@/services/api/HttpClient'
 import SignInView from '@/views/SignInView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import EditProfileView from '@/views/profile/EditProfileView.vue'
+import AddActivityView from '@/views/AddActivityView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -36,6 +37,12 @@ const router = createRouter({
       path: `${baseUrl}/dashboard`,
       name: 'dashboard',
       component: DashboardView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: `${baseUrl}/activities/add`,
+      name: 'add-activity',
+      component: AddActivityView,
       meta: { requiresAuth: true }
     },
     {

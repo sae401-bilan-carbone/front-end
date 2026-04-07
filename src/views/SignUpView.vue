@@ -1,158 +1,275 @@
-<!--
-  Revoir : 
-  - Règles de validation
--->
-
 <script setup>
-  import { useAuthStore } from '@/services/store/useAuthStore'
-import { ref } from 'vue' 
-  import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/services/store/useAuthStore'
+import IconGoogle from '@/components/icons/IconGoogle.vue'
+import IconApple from '@/components/icons/IconApple.vue'
 
-  const router = useRouter()
-  const loading = ref(false)
-  const globalError = ref(null)
-  const authStore = useAuthStore()
+const router = useRouter()
+const authStore = useAuthStore()
 
-  const form = ref({
-    email: '',
-    password: '',
-    name: '',
-    acceptPrivacy: false
-  })
+const loading = ref(false)
+const globalError = ref(null)
 
-  const errors = ref({
-    email: null,
-    password: null,
-    name: null,
-    acceptPrivacy: null
-  })
+const form = ref({
+  email: '',
+  password: '',
+  name: '',
+  acceptPrivacy: false
+})
 
-  function validateForm() {
-    errors.value = { email: null, password: null, acceptPrivacy: null }
-    let isValid = true
+const errors = ref({
+  email: null,
+  password: null,
+  name: null,
+  acceptPrivacy: null
+})
 
-    if (!form.value.email?.trim()) {
-      errors.value.email = 'Requis'
-      isValid = false
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
-      errors.value.email = "Invalide"
-      isValid = false
-    }
+function validateForm() {
+  errors.value = { email: null, password: null, name: null, acceptPrivacy: null }
+  let isValid = true
 
-    if (!form.value.password?.trim()) {
-      errors.value.password = 'Requis'
-      isValid = false
-    } else if (form.value.password.length < 4) {
-      errors.value.password = 'Au moins 4 caractères'
-      isValid = false
-    }
-
-    if (!form.value.name?.trim()) {
-      errors.value.name = 'Requis'
-      isValid = false
-    } else if (form.value.name.length < 4) {
-      errors.value.name = 'Au moins 4 caractères'
-      isValid = false
-    }
-
-    if (!form.value.acceptPrivacy) {
-      errors.value.acceptPrivacy = 'Requis'
-      isValid = false
-    }
-
-    return isValid
+  if (!form.value.email?.trim()) {
+    errors.value.email = 'Requis'
+    isValid = false
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
+    errors.value.email = "Format invalide"
+    isValid = false
   }
 
-  async function handleSubmit() {
-    globalError.value = null
-
-    if (!validateForm()) return
-
-    loading.value = true
-
-    try {
-      await authStore.signup(form.value.email, form.value.password, form.value.name)
-      router.push('dashboard')
-    } catch (e) {
-      if (e.data.emailError) errors.value.email = "Email déjà utilisé"
-      else globalError.value = "Erreur interne. Veuillez réessayer."
-    } finally {
-      loading.value = false
-    }
+  if (!form.value.password?.trim()) {
+    errors.value.password = 'Requis'
+    isValid = false
+  } else if (form.value.password.length < 4) {
+    errors.value.password = 'Au moins 4 caractères'
+    isValid = false
   }
+
+  if (!form.value.name?.trim()) {
+    errors.value.name = 'Requis'
+    isValid = false
+  }
+
+  return isValid
+}
+
+async function handleSubmit() {
+  globalError.value = null
+  if (!validateForm()) return
+  loading.value = true
+
+  try {
+    await authStore.signup(form.value.email, form.value.password, form.value.name)
+    router.push('/dashboard')
+  } catch (e) {
+    if (e.data?.emailError) errors.value.email = "Email déjà utilisé"
+    else globalError.value = "Erreur interne. Veuillez réessayer."
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
-  <h1>Inscription</h1>
+  <div class="auth-page">
+    <div class="auth-card">
+      <h1 class="title">S’inscrire gratuitement</h1>
 
-  <div v-if="globalError" class="error">
-    <p>{{ globalError }}</p>
-  </div>
+      <p class="description">
+        Suivez vos progrès et faites un geste pour la planète. 
+        Rejoignez les 100 millions de personnes actives sur Vesta.
+      </p>
 
-  <form @submit.prevent="handleSubmit">
-    <div>
-      <label for="email">Email</label>
-      <input 
-        v-model="form.email" 
-        type="email" 
-        id="email"
-        :disabled="loading"
-      >
-      <p class="error">{{ errors.email }}</p>
-    </div>
+      <div class="social-grid">
+        <button type="button" class="btn-social">
+          <IconGoogle :size="20" /> S’inscrire avec Google
+        </button>
+        <button type="button" class="btn-social">
+          <IconApple :size="20" /> S’inscrire avec Apple
+        </button>
+      </div>
 
-    <div>
-      <label for="password">Mot de passe</label>
-      <input 
-        v-model="form.password" 
-        type="password" 
-        id="password"
-        :disabled="loading"
-      >
-      <p class="error">{{ errors.password }}</p>
-    </div>
+      <div class="separator">
+        <span>Ou bien s’inscrire avec une adresse e-mail</span>
+      </div>
 
-    <div>
-      <label for="password">Name</label>
-      <input 
-        v-model="form.name" 
-        type="text" 
-        id="name"
-        :disabled="loading"
-      >
-      <p class="error">{{ errors.name }}</p>
-    </div>
+      <form @submit.prevent="handleSubmit" class="signup-form">
+        <div v-if="globalError" class="alert-error">{{ globalError }}</div>
 
-    <div>
-      <label for="privacy">J'accepte la <RouterLink to="privacy">politique de confidentialité des données</RouterLink></label>
-      <input 
-        v-model="form.acceptPrivacy" 
-        type="checkbox" 
-        id="privacy"
-        :disabled="loading"
-      >
-      <p class="error">{{ errors.acceptPrivacy }}</p>
-    </div>
+        <div class="form-group">
+          <input 
+            v-model="form.name" 
+            type="text" 
+            placeholder="Saisir votre nom"
+            :class="{ 'input-error': errors.name }"
+          />
+          <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
+        </div>
 
-    <button type="submit">
-      {{
-        loading
-          ? "Inscription en cours..."
-          : "S'inscrire"
-      }}
-    </button>
+        <div class="form-group">
+          <input 
+            v-model="form.email" 
+            type="email" 
+            placeholder="Saisir une adresse e-mail"
+            :class="{ 'input-error': errors.email }"
+          />
+          <span v-if="errors.email" class="error-msg">{{ errors.email }}</span>
+        </div>
 
-    <div>
-      <p>
-        Vous avez déjà un compte ? 
-        <RouterLink to="signin">Connectez-vous</RouterLink>
+        <div class="form-group">
+          <input 
+            v-model="form.password" 
+            type="password" 
+            placeholder="Mot de passe"
+            :class="{ 'input-error': errors.password }"
+          />
+          <span v-if="errors.password" class="error-msg">{{ errors.password }}</span>
+        </div>
+
+        <button type="submit" class="btn-submit" :disabled="loading">
+          {{ loading ? "Chargement..." : "S’inscrire" }}
+        </button>
+      </form>
+
+      <p class="terms">
+        En continuant, vous acceptez nos 
+        <RouterLink to="/terms">conditions de service</RouterLink> 
+        et notre 
+        <RouterLink to="/privacy">politique de confidentialité</RouterLink>
       </p>
     </div>
-  </form>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-  .error {
-    color: red;
+// L'auto-import doit être configuré dans vite.config.js
+// sinon ajoute @use "@/assets/styles/variables" as *;
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $white;
+  padding: $space-lg;
+}
+
+.auth-card {
+  max-width: 420px;
+  width: 100%;
+}
+
+.title {
+  font-family: $font-family-title;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $space-lg;
+}
+
+.description {
+  font-family: $font-family-base;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: $black;
+  margin-bottom: $space-xl;
+}
+
+.social-grid {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  margin-bottom: $space-xl;
+
+  .btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-md;
+    padding: 12px;
+    border: 1.5px solid $black;
+    background: transparent;
+    border-radius: $radius-md;
+    font-family: $font-family-base;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background-color: $gray-100; }
   }
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  margin-bottom: $space-xl;
+  font-size: 0.85rem;
+  color: $black;
+
+  &::before, &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: $black;
+  }
+  
+  span { padding: 0 $space-md; }
+}
+
+.signup-form {
+  .form-group {
+    margin-bottom: $space-md;
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid $black;
+      border-radius: $radius-md;
+      font-size: $font-size-base;
+      font-family: $font-family-base;
+
+      &.input-error { border-color: $danger; }
+      &:focus { outline: 1px solid $primary-color; }
+    }
+
+    .error-msg {
+      color: $danger;
+      font-size: $font-size-xs;
+      margin-top: 4px;
+      display: block;
+    }
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background-color: $primary-light; // Le vert de ton image
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.9; }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+}
+
+.terms {
+  margin-top: $space-lg;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: $black;
+
+  a { text-decoration: none; color: inherit; border-bottom: 1px solid $black; }
+}
+
+.alert-error {
+  background-color: rgba($danger, 0.1);
+  color: $danger;
+  padding: $space-sm;
+  border-radius: $radius-sm;
+  margin-bottom: $space-md;
+  text-align: center;
+}
 </style>
