@@ -1,6 +1,7 @@
 <script setup>
   import { useActivityStore } from '@/services/store/useActivityStore'
   import activityConfig from '../../../../config/activity'
+import PreviousButton from '../ui/PreviousButton.vue'
 
   const activityStore = useActivityStore()
 
@@ -22,5 +23,9 @@
       :value="energy"
       @change="radioHandle(energy)"
     >
+  </div>
+
+  <div>
+    <PreviousButton />
   </div>
 </template>

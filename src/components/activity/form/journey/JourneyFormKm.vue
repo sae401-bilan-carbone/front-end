@@ -1,5 +1,6 @@
 <script setup>
   import { useActivityStore } from '@/services/store/useActivityStore'
+import PreviousButton from '../ui/PreviousButton.vue';
 
   const activityStore = useActivityStore()
 
@@ -21,10 +22,14 @@
       >
     </div>
 
-    <button
-      type="submit"
-    >
-      Suivant
-    </button>
+    <div>
+      <PreviousButton />
+      
+      <button
+        type="submit"
+      >
+        Suivant
+      </button>
+    </div>
   </form>
 </template>

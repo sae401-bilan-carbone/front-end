@@ -23,7 +23,7 @@ export default {
         }
       ]
     },
-    buys: {
+    shopping: {
       steps: [
         {
           items: ['vêtements', 'electronique', 'courses']
