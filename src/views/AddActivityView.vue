@@ -5,6 +5,8 @@
   import JourneyForm from '@/components/activity/form/journey/JourneyForm.vue'
   import Recap from '@/components/activity/form/Recap.vue'
   import { computed, onMounted } from 'vue'
+import FoodForm from '@/components/activity/form/food/FoodForm.vue'
+import ShoppingForm from '@/components/activity/form/shopping/ShoppingForm.vue'
 
   const activityStore = useActivityStore()
 
@@ -28,6 +30,14 @@
 
   <JourneyForm
     v-if="activityStore.type === 'journey'"
+  />
+
+  <FoodForm
+    v-if="activityStore.type === 'food'"
+  />
+
+  <ShoppingForm
+    v-if="activityStore.type === 'shopping'"
   />
 
   <Recap

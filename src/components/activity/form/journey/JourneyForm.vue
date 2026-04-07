@@ -10,7 +10,7 @@
 
 <template>
   <div>
-    <p>Etape {{ activityStore.step }} sur {{ activityConfig.form.journey.steps.length }}</p>
+    <p>Etape {{ activityStore.step }} sur {{ activityConfig.form.journey.steps.length+2 }}</p>
   </div>
 
   <JourneyFormVehiculeType 
