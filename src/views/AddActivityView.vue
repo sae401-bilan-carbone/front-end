@@ -1,7 +1,9 @@
 <script setup>
   import { useActivityStore } from '@/services/store/useActivityStore'
-  import ActivityStep1 from '@/components/activity/form/ActivityStep1.vue'
+  import ActivityTypeChoice from '@/components/activity/form/ActivityTypeChoice.vue'
   import activityConfig from '../config/activity'
+import JourneyForm from '@/components/activity/form/journey/JourneyForm.vue';
+import Recap from '@/components/activity/form/Recap.vue';
 
   const activityStore = useActivityStore()
 </script>
@@ -11,7 +13,15 @@
 
   <p>Etape {{ activityStore.step }} sur {{ activityConfig.totalSteps }}.</p>
 
-  <ActivityStep1
+  <ActivityTypeChoice
     v-if="activityStore.step === 1"
+  />
+
+  <JourneyForm
+    v-if="activityStore.type === 'journey'"
+  />
+
+  <Recap
+    v-if="activityStore.step === 5"
   />
 </template>
