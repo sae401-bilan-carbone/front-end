@@ -1,0 +1,114 @@
+{
+  "activities": [
+    {
+      "id": 1,
+      "type": "transport",
+      "createdAt": "2026-04-07T08:00:00Z",
+      "data": { "vehicle": "car", "energy": "electric", "distance": 12, "round_trip": true }
+    },
+    {
+      "id": 2,
+      "type": "transport",
+      "createdAt": "2026-04-07T09:30:00Z",
+      "data": { "vehicle": "bike", "energy": "none", "distance": 5, "round_trip": false }
+    },
+    {
+      "id": 3,
+      "type": "transport",
+      "createdAt": "2026-04-07T12:15:00Z",
+      "data": { "vehicle": "car", "energy": "petrol", "distance": 20, "round_trip": true }
+    },
+    {
+      "id": 4,
+      "type": "transport",
+      "createdAt": "2026-04-07T15:00:00Z",
+      "data": { "vehicle": "bus", "energy": "diesel", "distance": 8, "round_trip": false }
+    },
+    {
+      "id": 5,
+      "type": "transport",
+      "createdAt": "2026-04-07T18:45:00Z",
+      "data": { "vehicle": "train", "energy": "electric", "distance": 50, "round_trip": true }
+    },
+    {
+      "id": 6,
+      "type": "transport",
+      "createdAt": "2026-04-07T20:00:00Z",
+      "data": { "vehicle": "car", "energy": "diesel", "distance": 15, "round_trip": false }
+    },
+
+    {
+      "id": 7,
+      "type": "food",
+      "createdAt": "2026-04-07T07:30:00Z",
+      "data": { "meals": [ { "type": "meat", "count": 1 } ] }
+    },
+    {
+      "id": 8,
+      "type": "food",
+      "createdAt": "2026-04-07T12:00:00Z",
+      "data": { "meals": [ { "type": "vegetarian", "count": 2 } ] }
+    },
+    {
+      "id": 9,
+      "type": "food",
+      "createdAt": "2026-04-07T12:30:00Z",
+      "data": { "meals": [ { "type": "meat", "count": 2 }, { "type": "vegetarian", "count": 1 } ] }
+    },
+    {
+      "id": 10,
+      "type": "food",
+      "createdAt": "2026-04-07T19:00:00Z",
+      "data": { "meals": [ { "type": "fish", "count": 1 }, { "type": "vegan", "count": 1 } ] }
+    },
+    {
+      "id": 11,
+      "type": "food",
+      "createdAt": "2026-04-07T20:15:00Z",
+      "data": { "meals": [ { "type": "meat", "count": 1 }, { "type": "vegan", "count": 1 } ] }
+    },
+    {
+      "id": 12,
+      "type": "food",
+      "createdAt": "2026-04-07T21:00:00Z",
+      "data": { "meals": [ { "type": "vegetarian", "count": 1 } ] }
+    },
+
+    {
+      "id": 13,
+      "type": "shopping",
+      "createdAt": "2026-04-07T10:00:00Z",
+      "data": { "items": [ { "category": "clothing", "amount": 30 } ] }
+    },
+    {
+      "id": 14,
+      "type": "shopping",
+      "createdAt": "2026-04-07T11:30:00Z",
+      "data": { "items": [ { "category": "electronics", "amount": 120 } ] }
+    },
+    {
+      "id": 15,
+      "type": "shopping",
+      "createdAt": "2026-04-07T14:00:00Z",
+      "data": { "items": [ { "category": "daily", "amount": 15 }, { "category": "furniture", "amount": 200 } ] }
+    },
+    {
+      "id": 16,
+      "type": "shopping",
+      "createdAt": "2026-04-07T16:00:00Z",
+      "data": { "items": [ { "category": "clothing", "amount": 50 } ] }
+    },
+    {
+      "id": 17,
+      "type": "shopping",
+      "createdAt": "2026-04-07T17:30:00Z",
+      "data": { "items": [ { "category": "electronics", "amount": 80 }, { "category": "daily", "amount": 20 } ] }
+    },
+    {
+      "id": 18,
+      "type": "shopping",
+      "createdAt": "2026-04-07T19:15:00Z",
+      "data": { "items": [ { "category": "furniture", "amount": 150 } ] }
+    }
+  ]
+}
