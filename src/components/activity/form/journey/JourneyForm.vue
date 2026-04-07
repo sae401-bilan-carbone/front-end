@@ -1,5 +1,6 @@
 <script setup>
   import { useActivityStore } from '@/services/store/useActivityStore'
+  import activityConfig from '../../../../config/activity'
   import JourneyFormVehiculeType from './JourneyFormVehiculeType.vue'
   import JourneyFormKm from './JourneyFormKm.vue'
   import JourneyFormEnergy from './JourneyFormEnergy.vue'
@@ -8,6 +9,10 @@
 </script>
 
 <template>
+  <div>
+    <p>Etape {{ activityStore.step }} sur {{ activityConfig.form.journey.steps.length }}</p>
+  </div>
+
   <JourneyFormVehiculeType 
     v-if="activityStore.step === 2"
   />

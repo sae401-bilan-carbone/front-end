@@ -1,12 +1,18 @@
 <script setup>
   import { useActivityStore } from '@/services/store/useActivityStore'
   import activityConfig from '../../../config/activity'
+  import { useRouter } from 'vue-router'
 
   const activityStore = useActivityStore()
+  const router = useRouter()
 
   function radioHandle(type) {
     activityStore.setType(type)
     activityStore.setStep(activityStore.step + 1)
+  }
+
+  function previousHandle() {
+    router.push({ name: 'dashboard' })
   }
 </script>
 
@@ -23,4 +29,10 @@
       @change="radioHandle(type)"
     >
   </div>
+
+  <button
+    @click="previousHandle"
+  >
+    Retour
+  </button>
 </template>

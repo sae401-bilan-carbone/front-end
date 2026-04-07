@@ -16,7 +16,7 @@
 
   function handleValidate() {
     router.push({ name: 'dashboard' })
-    
+
     activityStore.type = null
     activityStore.step = 1
   }
@@ -33,15 +33,15 @@
 
   <div>
     <button
-      @click="previousHandle"
-    >
-      Retour
-    </button>
-
-    <button
       @click="resetHandle"
     >
       Recommencer
+    </button>
+    
+    <button
+      @click="previousHandle"
+    >
+      Retour
     </button>
 
     <button
