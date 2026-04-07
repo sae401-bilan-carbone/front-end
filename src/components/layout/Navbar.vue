@@ -28,6 +28,7 @@
       </div>
 
       <router-link v-if="authStore.user" :to="{ name: 'profile' }">
+        <router-link :to="{ name: 'add-activity' }"><span class="material-symbols-outlined">add</span></router-link>
         <img :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" :alt="`${authStore.user.name}_profile_picture`">
       </router-link>
 
