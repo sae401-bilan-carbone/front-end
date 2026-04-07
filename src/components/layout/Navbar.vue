@@ -32,7 +32,7 @@
         <img :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" :alt="`${authStore.user.name}_profile_picture`">
       </router-link>
 
-      <router-link v-else :to="{ name: 'signin' }" class="btn-primary">Connexion</router-link>
+      <router-link v-else :to="{ name: 'signup' }" class="btn-primary">S'inscrire</router-link>
     </div>
 
     <Transition name="fade">
