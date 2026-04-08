@@ -38,6 +38,7 @@
         <router-link :to="{ name: 'add-activity' }" class="icon-link">
           <span class="material-symbols-outlined">add</span>
         </router-link>
+        
         <router-link :to="{ name: 'profile' }" class="profile-link">
           <img 
             :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" 
@@ -93,7 +94,7 @@
               </Transition>
             </div>
 
-            <router-link to="/profil" @click="isMenuOpen = false">Profil</router-link>
+            <router-link :to="{ name: 'profile' }" @click="isMenuOpen = false">Profil</router-link>
             <router-link to="/parametres" @click="isMenuOpen = false">Paramètres</router-link>
             
             <hr class="nav-mobile__divider" />
