@@ -9,6 +9,7 @@ import SignInView from '@/views/SignInView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import EditProfileView from '@/views/profile/EditProfileView.vue'
 import AddActivityView from '@/views/AddActivityView.vue'
+import StatsView from '@/views/StatsView.vue'
 
 const supportedLocales = ['fr', 'en']
 const defaultLocale = 'fr'
@@ -83,6 +84,12 @@ const router = createRouter({
         const locale = localStorage.getItem('locale') || defaultLocale
         return `/${locale}/404`
       }
+    },
+    {
+      path: `${baseUrl}/stats`,
+      name: 'stats',
+      component: StatsView,
+      meta: { requiresAuth: true }
     }
   ]
 })
@@ -103,7 +110,7 @@ router.beforeEach((to, from) => {
   // Auth
 
   const isProtected = to.matched.some(record => record.meta.requiresAuth)
-  const isAuthenticated = HttpClient.getToken()
+ const isAuthenticated = HttpClient.getToken()
 
   if (isProtected && !isAuthenticated) {
     return { 
