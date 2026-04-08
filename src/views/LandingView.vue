@@ -4,7 +4,7 @@
       <div class="hero__image-container">
         <img src="@/assets/hero-rocks.jpg" alt="Vesta Hero - Roches" class="hero__bg" />
         
-        <button class="hero__cta">Rejoins nous maintenant</button>
+        <button class="hero__cta">Rejoins-nous maintenant</button>
       </div>
     </section>
 
@@ -39,7 +39,7 @@
       
       <hr class="separator" />
       <router-link to="/register" class="link-cta">
-        <ChevronRight :size="18" /> Rejoins nous maintenant
+        <ChevronRight :size="18" /> Rejoins-nous maintenant
       </router-link>
       <hr class="separator" />
     </section>
@@ -77,7 +77,7 @@ import { ChevronRight, Target, Leaf } from 'lucide-vue-next';
 <style lang="scss" scoped>
 // Conteneur principal
 .landing {
-  background-color: $white;
+  background-color: rgba($primary-color, 0.1);
 }
 
 // Utilitaires de section
@@ -106,7 +106,7 @@ import { ChevronRight, Target, Leaf } from 'lucide-vue-next';
 .hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 14; 
+  aspect-ratio: 16 / 18; 
   overflow: hidden;
 
   &__image-container {
@@ -123,20 +123,19 @@ import { ChevronRight, Target, Leaf } from 'lucide-vue-next';
 
   &__cta {
     position: absolute;
-    bottom: $space-lg;
+    bottom: $space-xl;
     left: 50%;
     transform: translateX(-50%);
     
-    background-color: rgba($primary-color, 0.7);
+    background-color: rgba($primary-color, 0.8);
     color: $white;
-    border: none;
-    padding: $space-sm $space-xl;
-    border-radius: $radius-full;
-    
+    padding: 8px 16px;
+    border-radius: $radius-sm;
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    cursor: pointer;
+    text-decoration: none;
     white-space: nowrap;
+    transition: opacity 0.2s;
     
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -186,17 +185,19 @@ import { ChevronRight, Target, Leaf } from 'lucide-vue-next';
 // --- ACTIVITY ---
 .activity {
   &__title {
-    font-size: $font-size-md; // Utilisation de MD pour éviter l'erreur LG
+    font-family: $font-family-title;
+    font-size: $font-size-xl;
     font-weight: $font-weight-bold;
-    margin-bottom: $space-sm;
+    margin-bottom: $space-md;
+    color: $black;
   }
 
   &__description {
-    font-size: $font-size-sm;
+    font-size: $font-size-base;
+    line-height: 1.6;
     color: $gray-900;
-    line-height: 1.5;
-    max-width: 95%;
-    margin: 0 auto $space-lg;
+    max-width: 90%;
+    margin: 0 auto $space-xl;
   }
 
   .separator {

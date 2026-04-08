@@ -86,8 +86,9 @@
               
               <Transition name="expand">
                 <div v-if="isActivitiesOpen" class="dropdown-content">
-                  <router-link to="/activites/cours" @click="isMenuOpen = false">Cours</router-link>
-                  <router-link to="/activites/ateliers" @click="isMenuOpen = false">Ateliers</router-link>
+                  <router-link to="/activites/transport" @click="isMenuOpen = false">Transport</router-link>
+                  <router-link to="/activites/nourriture" @click="isMenuOpen = false">Nourriture</router-link>
+                  <router-link to="/activites/shoppingq" @click="isMenuOpen = false">Shopping</router-link>
                 </div>
               </Transition>
             </div>
@@ -114,7 +115,7 @@
 
 .header {
   height: 60px;
-  background: $white;
+  background: $gray-100;
   border-bottom: 1px solid $gray-200;
   position: sticky;
   top: 0;
@@ -204,7 +205,7 @@
   left: 0;
   width: 280px;
   height: 100vh;
-  background: $white;
+  background: $gray-100;
   z-index: $z-modal + 1;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 
@@ -252,7 +253,7 @@
     border: none;
     border-top: 1.5px solid $black;
     margin: $space-sm 0;
-    width: 50px;
+    width: 150px;
   }
 
   .small-link {

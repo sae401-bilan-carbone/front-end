@@ -96,11 +96,12 @@ async function handleSubmit() {
   justify-content: center;
   align-items: center;
   padding: $space-lg;
+  background-color: rgba($primary-color, 0.1);
 }
 .auth-card { max-width: 420px; width: 100%; }
 .title { font-family: $font-family-title; font-size: $font-size-2xl; font-weight: $font-weight-bold; margin-bottom: $space-lg; }
 .social-grid { display: flex; flex-direction: column; gap: $space-sm; margin-bottom: $space-xl;
-  .btn-social { display: flex; align-items: center; justify-content: center; gap: $space-md; padding: 12px; border: 1.5px solid $black; background: transparent; border-radius: $radius-md; font-family: $font-family-base; font-weight: $font-weight-medium; cursor: pointer;
+  .btn-social { display: flex; align-items: center; justify-content: center; gap: $space-md; padding: 12px; border: 1.5px solid $black; background: $gray-100; border-radius: $radius-md; font-family: $font-family-base; font-weight: $font-weight-medium; cursor: pointer;
 }
 }
 .separator { display: flex; align-items: center; margin-bottom: $space-xl; font-size: 0.85rem;

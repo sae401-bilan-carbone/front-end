@@ -20,7 +20,4 @@
 </template>
 
 <style scoped>
-  .nav-and-main {
-    min-height: 100vh;
-  }
 </style>

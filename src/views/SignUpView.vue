@@ -174,6 +174,7 @@ async function handleSubmit() {
   align-items: center;
   background-color: $white;
   padding: $space-lg;
+  background-color: rgba($primary-color, 0.1);
 }
 
 .auth-card {
@@ -209,7 +210,7 @@ async function handleSubmit() {
     gap: $space-md;
     padding: 12px;
     border: 1.5px solid $black;
-    background: transparent;
+    background: $gray-100;
     border-radius: $radius-md;
     font-family: $font-family-base;
     font-weight: $font-weight-medium;

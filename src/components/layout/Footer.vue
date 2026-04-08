@@ -57,7 +57,7 @@ import {
 
 <style lang="scss" scoped>
 .footer {
-  background-color: #e0e0e0; // Gris clair du design
+  background-color: $gray-200; // Gris clair du design
   padding: $space-xl $space-lg;
   color: $black;
 
