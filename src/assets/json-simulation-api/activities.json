@@ -2,42 +2,42 @@
   "activities": [
     {
       "id": 1,
-      "type": "transport",
+      "type": "journey",
       "createdAt": "2026-04-07T08:00:00Z",
       "data": { "vehicle": "car", "energy": "electric", "distance": 12, "round_trip": true },
       "co2": 2.4
     },
     {
       "id": 2,
-      "type": "transport",
+      "type": "journey",
       "createdAt": "2026-04-07T09:30:00Z",
       "data": { "vehicle": "bike", "energy": "none", "distance": 5, "round_trip": false },
       "co2": 0
     },
     {
       "id": 3,
-      "type": "transport",
+      "type": "journey",
       "createdAt": "2026-04-07T12:15:00Z",
       "data": { "vehicle": "car", "energy": "petrol", "distance": 20, "round_trip": true },
       "co2": 9.6
     },
     {
       "id": 4,
-      "type": "transport",
+      "type": "journey",
       "createdAt": "2026-04-07T15:00:00Z",
       "data": { "vehicle": "bus", "energy": "diesel", "distance": 8, "round_trip": false },
       "co2": 1.2
     },
     {
       "id": 5,
-      "type": "transport",
+      "type": "journey",
       "createdAt": "2026-04-07T18:45:00Z",
       "data": { "vehicle": "train", "energy": "electric", "distance": 50, "round_trip": true },
       "co2": 5.0
     },
     {
       "id": 6,
-      "type": "transport",
+      "type": "journey",
       "createdAt": "2026-04-07T20:00:00Z",
       "data": { "vehicle": "car", "energy": "diesel", "distance": 15, "round_trip": false },
       "co2": 4.5
