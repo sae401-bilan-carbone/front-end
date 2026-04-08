@@ -2,229 +2,244 @@
   <div class="profile-view">
     <header class="header">
       <button @click="$router.back()" class="btn-back">
-        <span class="material-symbols-outlined">chevron_left</span>
+        <span class="material-symbols-outlined">arrow_back_ios</span>
       </button>
+      <h2 class="header__title">Mon Profil</h2>
     </header>
 
-    <div class="avatar-section">
-      <div class="avatar-container">
-        <div class="avatar-outline">
-          <img 
-            :src="authStore.user?.profilePicture || '/images/placeholders/default-profile-picture.png'" 
-            class="avatar-image"
-          />
-        </div>
-        <button class="edit-badge">
-          <span class="material-symbols-outlined">edit</span>
-        </button>
-      </div>
-      <div class="user-main-info">
-        <h1>{{ authStore.user?.firstName || 'Prénom' }}</h1>
-        <h1>{{ authStore.user?.lastName || 'Nom' }}</h1>
-      </div>
-    </div>
-
     <main class="content">
-      <div class="info-card">
-        <h3 class="card-title">Informations personnelles</h3>
-        
-        <div class="field-list">
-          <div class="field-item">
-            <p class="field-text">Prénom : {{ authStore.user?.firstName || 'X' }}</p>
-            <span class="material-symbols-outlined edit-field-icon">edit</span>
-          </div>
-          
-          <div class="field-item">
-            <p class="field-text">Nom : {{ authStore.user?.lastName || 'X' }}</p>
-            <span class="material-symbols-outlined edit-field-icon">edit</span>
-          </div>
-          
-          <div class="field-item">
-            <p class="field-text">E-mail : {{ authStore.user?.email || 'nom@domaine.com' }}</p>
-            <span class="material-symbols-outlined edit-field-icon">edit</span>
-          </div>
-          
-          <div class="field-item">
-            <p class="field-text">Mot de passe : *****</p>
-            <span class="material-symbols-outlined edit-field-icon">edit</span>
-          </div>
-          
-          <div class="field-item">
-            <p class="field-text">Date de naissance : {{ authStore.user?.birthDate || 'xx/xx/xxxx' }}</p>
-            <span class="material-symbols-outlined edit-field-icon">edit</span>
+      <section class="identity-card is-animated">
+        <div class="avatar-container">
+          <div class="avatar-wrapper">
+            <img 
+              :src="authStore.user?.profilePicture || '/images/placeholders/default-profile-picture.png'" 
+              class="avatar-image"
+              alt="Photo de profil"
+            />
+            <button class="edit-badge" aria-label="Modifier la photo">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
           </div>
         </div>
-      </div>
+        
+        <div class="user-titles">
+          <h1 class="user-name">
+            {{ authStore.user?.firstName || 'Prénom' }}
+            <span class="user-lastname">{{ authStore.user?.lastName || 'Nom' }}</span>
+          </h1>
+        </div>
+      </section>
 
-      <button @click="authStore.logout()" class="btn-logout">Se déconnecter</button>
+      <section class="info-box is-animated delay-1">
+        <h3 class="info-box__title">Informations personnelles</h3>
+        
+        <div class="field-group">
+          <div v-for="(field, index) in staticFields" :key="index" class="field-row">
+            <div class="field-content">
+              <span class="field-label">{{ field.label }} :</span>
+              <span class="field-value">{{ field.value }}</span>
+            </div>
+            <button class="btn-icon-field">
+              <span class="material-symbols-outlined">edit_note</span>
+            </button>
+          </div>
+
+          <div class="field-row field-row--password">
+            <div class="field-content">
+              <span class="field-label">Mot de passe :</span>
+              <span class="field-value">{{ isPasswordVisible ? 'Vesta#401' : '••••••••••••' }}</span>
+            </div>
+            <div class="field-actions">
+              <button @click="isPasswordVisible = !isPasswordVisible" class="btn-icon-field">
+                <span class="material-symbols-outlined">
+                  {{ isPasswordVisible ? 'visibility_off' : 'visibility' }}
+                </span>
+              </button>
+              <button class="btn-icon-field">
+                <span class="material-symbols-outlined">edit_note</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-content">
+              <span class="field-label">Date de naissance :</span>
+              <span class="field-value">{{ authStore.user?.birthDate || 'xx / xx / xxxx' }}</span>
+            </div>
+            <button class="btn-icon-field">
+              <span class="material-symbols-outlined">edit_note</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <button @click="handleLogout" class="btn-logout-link is-animated delay-2">
+         <span class="material-symbols-outlined">logout</span>
+         Se déconnecter
+      </button>
     </main>
   </div>
 </template>
 
 <script setup>
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/services/store/useAuthStore'
 
-// Utilisation du store authentification pour récupérer les données
 const authStore = useAuthStore()
+const router = useRouter()
+const isPasswordVisible = ref(false)
+
+// Champs de base (l'ordre respecte l'UI demandée)
+const staticFields = computed(() => [
+  { label: 'Prénom', value: authStore.user?.firstName || 'Prénom' },
+  { label: 'Nom', value: authStore.user?.lastName || 'Nom' },
+  { label: 'E-mail', value: authStore.user?.email || 'nom@domaine.com' },
+])
+
+async function handleLogout() {
+  await authStore.logout()
+  router.push({ name: 'landing' })
+}
 </script>
 
 <style lang="scss" scoped>
-/* Importation des variables globales pour la cohérence */
 @use "@/assets/styles/variables" as *;
+
+// --- CONFIG DES ANIMATIONS ---
+$transition-speed: 0.4s;
+$cubic-bezier: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
 .profile-view {
   min-height: 100vh;
+  background-color: rgba($primary-color, 0.1); // Ton fond teinté
   display: flex;
   flex-direction: column;
-  background-color: $white;
 }
 
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.is-animated {
+  opacity: 0;
+  animation: slideInUp $transition-speed $cubic-bezier forwards;
+  &.delay-1 { animation-delay: 0.1s; }
+  &.delay-2 { animation-delay: 0.2s; }
+}
+
+// --- HEADER ---
 .header {
-  padding: $space-lg $space-md 0;
-  
-  .btn-back {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    
-    span {
-      font-size: 32px;
-      color: $black; // Ou une couleur foncée par défaut
-      font-weight: bold;
-    }
-  }
-}
-
-.avatar-section {
+  padding: $space-lg $space-lg 0;
   display: flex;
   align-items: center;
-  gap: $space-lg;
-  padding: $space-lg $space-xl;
+  gap: $space-md;
 
-  .avatar-container {
-    position: relative;
-    width: 110px; // Légèrement plus grand pour la maquette
-    height: 110px;
-
-    .avatar-outline {
-      width: 100%;
-      height: 100%;
-      border: 3px solid $primary-color; // Contour vert dynamique
-      border-radius: 50%;
-      padding: 5px; // Espace entre le contour et l'image
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      
-      .avatar-image {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        // Image d'espace réservé grise par défaut via le backend/store
-      }
+  .btn-back {
+    background: none; border: none; cursor: pointer; padding: $space-sm;
+    span { 
+      font-size: 24px; color: $primary-dark; font-weight: bold;
+      transition: transform 0.2s;
     }
-
-    .edit-badge {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: none;
-      border: none;
-      color: $primary-color; // Vert dynamique
-      cursor: pointer;
-      padding: 0;
-      transform: translate(25%, -25%); // Décale légèrement vers le haut/droite
-      
-      span {
-        font-size: 20px;
-        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      }
-    }
+    &:hover span { transform: translateX(-3px); }
   }
 
-  .user-main-info {
-    flex: 1;
-    
-    h1 {
-      font-family: $font-family-title;
-      font-weight: $font-weight-bold;
-      font-size: $font-size-2xl; // Taille adaptée pour le titre principal
-      color: $black;
-      margin: 0;
-      line-height: 1.2;
-    }
+  &__title {
+    font-family: $font-family-title;
+    font-size: $font-size-base;
+    color: $black;
+    font-weight: $font-weight-medium;
   }
 }
 
 .content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: $space-lg $space-xl;
-  padding-bottom: 80px; // Espace pour la Navbar mobile si nécessaire
+  padding: $space-lg $space-lg $space-xl;
+  display: flex; flex-direction: column; gap: $space-lg;
 }
 
-.info-card {
-  border: 1.5px solid $primary-dark; // Bordure foncée de la carte
-  border-radius: $radius-lg * 2; // Coins arrondis comme la maquette
-  background-color: $white;
-  padding: $space-lg $space-xl;
-  margin-bottom: $space-xl;
+// --- IDENTITY SECTION ---
+.identity-card {
+  display: flex; align-items: center; gap: $space-xl; padding: $space-md;
+  
+  .avatar-wrapper {
+    position: relative; width: 100px; height: 100px;
+    background: $white; border-radius: 50%; padding: 4px;
+    box-shadow: 0 0 0 2px $primary-color, 0 4px 12px rgba(0,0,0,0.1);
 
-  .card-title {
-    font-family: $font-family-title;
-    font-weight: $font-weight-medium;
-    font-size: $font-size-lg;
-    color: $black;
-    text-align: center;
-    margin-bottom: $space-xl; // Espace sous le titre de la carte
+    .avatar-image { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+    .edit-badge {
+      position: absolute; bottom: 0; right: 0;
+      background: $primary-color; color: $white; border: 2px solid $white;
+      border-radius: 50%; width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      span { font-size: 16px; }
+    }
   }
 
-  .field-list {
-    display: flex;
-    flex-direction: column;
-    gap: $space-md; // Espace régulier entre les champs
-
-    .field-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .field-text {
-        font-family: $font-family-base;
-        font-size: $font-size-base;
-        color: $black;
-        margin: 0;
-      }
-
-      .edit-field-icon {
-        color: $primary-color; // Icônes d'édition vertes
-        font-size: 18px;
-        cursor: pointer;
-        // Rempli (FILL) comme indiqué dans les symboles globaux
-      }
+  .user-titles {
+    .user-name {
+      margin: 0; font-family: $font-family-title; font-size: $font-size-2xl;
+      color: $black; line-height: 1.1;
+      .user-lastname { font-weight: $font-weight-bold; text-transform: uppercase; }
     }
   }
 }
 
-.btn-logout {
-  display: block;
-  width: 100%;
-  text-align: center;
-  background: none;
-  border: none;
-  color: $primary-color; // Vert dynamique
-  font-family: $font-family-base;
-  font-size: $font-size-md;
-  text-decoration: underline; // Comme dans la maquette
-  cursor: pointer;
-  margin-top: auto; // Pousse le bouton vers le bas
-  padding: $space-sm;
+// --- INFO BOX ---
+.info-box {
+  background: $white;
+  border: 1px solid rgba($primary-dark, 0.2);
+  border-radius: 35px; // Bords très arrondis
+  padding: $space-xl;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 
-  &:hover {
-    color: $primary-dark;
+  &__title {
+    text-align: center;
+    font-family: $font-family-title;
+    font-size: $font-size-lg;
+    margin-bottom: $space-xl;
+    color: $black;
   }
+}
+
+.field-group { display: flex; flex-direction: column; gap: $space-md; }
+
+.field-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: $space-sm $space-xs;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  
+  .field-content {
+    display: flex; gap: 8px; font-family: $font-family-base;
+    .field-label { color: $black; font-weight: $font-weight-medium; }
+    .field-value { color: #555; }
+  }
+
+  .field-actions { display: flex; gap: $space-md; align-items: center; }
+
+  .btn-icon-field {
+    background: none; border: none; color: $primary-color;
+    cursor: pointer; padding: 0;
+    span { font-size: 20px; }
+    &:hover { color: $primary-dark; }
+  }
+
+  &--password .field-value { font-family: monospace; color: $primary-dark; }
+}
+
+// --- LOGOUT ---
+.btn-logout-link {
+  margin-top: $space-xl;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: none; border: none;
+  color: $primary-color;
+  font-family: $font-family-base; font-weight: $font-weight-medium;
+  text-decoration: underline; cursor: pointer;
+  align-self: center; padding: $space-md;
+
+  &:hover { color: $primary-dark; text-decoration: none; }
 }
 </style>
