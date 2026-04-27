@@ -1,101 +1,48 @@
-<template>
-  <div class="profile-view">
-    <header class="header">
-      <button @click="$router.back()" class="btn-back">
-        <span class="material-symbols-outlined">arrow_back_ios</span>
-      </button>
-      <h2 class="header__title">Mon Profil</h2>
-    </header>
-
-    <main class="content">
-      <section class="identity-card is-animated">
-        <div class="avatar-container">
-          <div class="avatar-wrapper">
-            <img 
-              :src="authStore.user?.profilePicture || '/images/placeholders/default-profile-picture.png'" 
-              class="avatar-image"
-              alt="Photo de profil"
-            />
-            <button class="edit-badge" aria-label="Modifier la photo">
-              <span class="material-symbols-outlined">edit</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="user-titles">
-          <h1 class="user-name">
-            {{ authStore.user?.firstName || 'Prénom' }}
-            <span class="user-lastname">{{ authStore.user?.lastName || 'Nom' }}</span>
-          </h1>
-        </div>
-      </section>
-
-      <section class="info-box is-animated delay-1">
-        <h3 class="info-box__title">Informations personnelles</h3>
-        
-        <div class="field-group">
-          <div v-for="(field, index) in staticFields" :key="index" class="field-row">
-            <div class="field-content">
-              <span class="field-label">{{ field.label }} :</span>
-              <span class="field-value">{{ field.value }}</span>
-            </div>
-            <button class="btn-icon-field">
-              <span class="material-symbols-outlined">edit_note</span>
-            </button>
-          </div>
-
-          <div class="field-row field-row--password">
-            <div class="field-content">
-              <span class="field-label">Mot de passe :</span>
-              <span class="field-value">{{ isPasswordVisible ? 'Vesta#401' : '••••••••••••' }}</span>
-            </div>
-            <div class="field-actions">
-              <button @click="isPasswordVisible = !isPasswordVisible" class="btn-icon-field">
-                <span class="material-symbols-outlined">
-                  {{ isPasswordVisible ? 'visibility_off' : 'visibility' }}
-                </span>
-              </button>
-              <button class="btn-icon-field">
-                <span class="material-symbols-outlined">edit_note</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field-content">
-              <span class="field-label">Date de naissance :</span>
-              <span class="field-value">{{ authStore.user?.birthDate || 'xx / xx / xxxx' }}</span>
-            </div>
-            <button class="btn-icon-field">
-              <span class="material-symbols-outlined">edit_note</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <button @click="handleLogout" class="btn-logout-link is-animated delay-2">
-         <span class="material-symbols-outlined">logout</span>
-         Se déconnecter
-      </button>
-    </main>
-  </div>
-</template>
-
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/services/store/useAuthStore'
+import { useActivityStore } from '@/services/store/useActivityStore'
 
+const { t, locale } = useI18n()
 const authStore = useAuthStore()
+const activityStore = useActivityStore()
 const router = useRouter()
-const isPasswordVisible = ref(false)
 
-// Champs de base (l'ordre respecte l'UI demandée)
-const staticFields = computed(() => [
-  { label: 'Prénom', value: authStore.user?.firstName || 'Prénom' },
-  { label: 'Nom', value: authStore.user?.lastName || 'Nom' },
-  { label: 'E-mail', value: authStore.user?.email || 'nom@domaine.com' },
-])
+const streak = computed(() => {
+  if (!activityStore.activities.length) return 0
+  const key = d => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+  const activityKeys = new Set(activityStore.activities.map(a => key(new Date(a.createdAt))))
+  let count = 0
+  const cursor = new Date()
+  cursor.setHours(0, 0, 0, 0)
+  if (!activityKeys.has(key(cursor))) cursor.setDate(cursor.getDate() - 1)
+  while (activityKeys.has(key(cursor))) { count++; cursor.setDate(cursor.getDate() - 1) }
+  return count
+})
+
+const totalCO2 = computed(() => {
+  const v = activityStore.stats?.total_emitted ?? 0
+  if (v >= 1000) return `${(v / 1000).toFixed(2)} ${t('common.units.tons')}`
+  return `${Number(v).toFixed(1)} ${t('common.units.kg')}`
+})
+
+const activityCount = computed(() => activityStore.activities.length)
+
+const topCategory = computed(() => {
+  const cat = activityStore.stats?.by_category
+  if (!cat) return null
+  const top = Object.entries(cat).reduce((a, b) => b[1] > a[1] ? b : a, ['', 0])
+  return top[1] > 0 ? t(`profile.categories.${top[0]}`) : null
+})
+
+const memberSince = computed(() => {
+  if (!authStore.user?.createdAt) return null
+  const intlLocale = locale.value === 'fr' ? 'fr-FR' : 'en-US'
+  return new Intl.DateTimeFormat(intlLocale, { month: 'long', year: 'numeric' })
+    .format(new Date(authStore.user.createdAt))
+})
 
 async function handleLogout() {
   await authStore.logout()
@@ -103,143 +50,304 @@ async function handleLogout() {
 }
 </script>
 
+<template>
+  <div class="profile-view">
+    <div class="hero">
+      <button class="hero__back" @click="$router.back()">
+        <span class="material-symbols-outlined">arrow_back_ios</span>
+      </button>
+      <div class="hero__avatar-wrap">
+        <img :src="authStore.user?.profilePicture || '/images/placeholders/default-profile-picture.png'"
+          class="hero__avatar" alt="Photo de profil" />
+      </div>
+      <h1 class="hero__name">{{ authStore.user?.name || 'Utilisateur' }}</h1>
+      <p v-if="memberSince" class="hero__since">{{ t('profile.member_since', { date: memberSince }) }}</p>
+    </div>
+
+    <div class="section">
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-card__value">{{ totalCO2 }}</span>
+          <span class="stat-card__label">{{ t('profile.co2_total') }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value">{{ activityCount }}</span>
+          <span class="stat-card__label">{{ t('profile.activities') }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value">{{ streak > 0 ? streak : '—' }}</span>
+          <span class="stat-card__label">{{ streak > 0 ? `🔥 ${t('dashboard.streak', streak)}` :
+            t('profile.streak_label') }}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card__title">{{ t('profile.info_title') }}</h2>
+        <div class="info-list">
+          <div class="info-row">
+            <div class="info-row__left">
+              <span class="material-symbols-outlined info-row__icon">person</span>
+              <span class="info-row__label">{{ t('profile.name') }}</span>
+            </div>
+            <span class="info-row__value">{{ authStore.user?.name || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <div class="info-row__left">
+              <span class="material-symbols-outlined info-row__icon">mail</span>
+              <span class="info-row__label">{{ t('profile.email') }}</span>
+            </div>
+            <span class="info-row__value">{{ authStore.user?.email || '—' }}</span>
+          </div>
+          <div class="info-row" v-if="topCategory">
+            <div class="info-row__left">
+              <span class="material-symbols-outlined info-row__icon">bar_chart</span>
+              <span class="info-row__label">{{ t('profile.top_category') }}</span>
+            </div>
+            <span class="info-row__value">{{ topCategory }}</span>
+          </div>
+        </div>
+        <router-link :to="{ name: 'edit-profile' }" class="btn-edit">
+          <span class="material-symbols-outlined">edit</span>
+          {{ t('profile.edit_btn') }}
+        </router-link>
+      </div>
+
+      <button class="btn-logout" @click="handleLogout">
+        <span class="material-symbols-outlined">logout</span>
+        {{ t('profile.logout_btn') }}
+      </button>
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 @use "@/assets/styles/variables" as *;
 
-// --- CONFIG DES ANIMATIONS ---
-$transition-speed: 0.4s;
-$cubic-bezier: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
 .profile-view {
   min-height: 100vh;
-  background-color: rgba($primary-color, 0.1); // Ton fond teinté
+  background-color: $gray-100;
+  padding-bottom: $space-xl;
+}
+
+.hero {
+  background: linear-gradient(155deg, $primary-dark 0%, $primary-color 60%, $primary-light 100%);
+  padding: $space-lg $space-lg $space-xl;
+  color: $white;
   display: flex;
   flex-direction: column;
-}
-
-@keyframes slideInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.is-animated {
-  opacity: 0;
-  animation: slideInUp $transition-speed $cubic-bezier forwards;
-  &.delay-1 { animation-delay: 0.1s; }
-  &.delay-2 { animation-delay: 0.2s; }
-}
-
-// --- HEADER ---
-.header {
-  padding: $space-lg $space-lg 0;
-  display: flex;
   align-items: center;
-  gap: $space-md;
+  position: relative;
 
-  .btn-back {
-    background: none; border: none; cursor: pointer; padding: $space-sm;
-    span { 
-      font-size: 24px; color: $primary-dark; font-weight: bold;
-      transition: transform 0.2s;
+  &__back {
+    position: absolute;
+    top: $space-lg;
+    left: $space-md;
+    background: rgba($white, 0.15);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: $white;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+
+    span {
+      font-size: 18px;
     }
-    &:hover span { transform: translateX(-3px); }
+
+    &:hover {
+      background: rgba($white, 0.28);
+    }
   }
+
+  &__avatar-wrap {
+    margin-top: $space-xl;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    padding: 3px;
+    background: rgba($white, 0.3);
+    margin-bottom: $space-md;
+  }
+
+  &__avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid $white;
+  }
+
+  &__name {
+    font-family: $font-family-title;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $space-xs;
+    color: $white;
+  }
+
+  &__since {
+    font-size: $font-size-xs;
+    opacity: 0.7;
+    margin: 0;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+  padding: $space-lg;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-sm;
+}
+
+.stat-card {
+  background: $white;
+  border-radius: 16px;
+  padding: $space-md $space-sm;
+  text-align: center;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &__value {
+    font-family: $font-family-title;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+    line-height: 1.1;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+}
+
+.card {
+  background: $white;
+  border-radius: 20px;
+  padding: $space-lg;
+  box-shadow: $shadow-md;
 
   &__title {
     font-family: $font-family-title;
     font-size: $font-size-base;
-    color: $black;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin: 0 0 $space-lg;
+  }
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: $space-lg;
+  background: $gray-200;
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $white;
+  padding: $space-md;
+  gap: $space-md;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+  }
+
+  &__icon {
+    font-size: 18px;
+    color: $primary-color;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $gray-500;
     font-weight: $font-weight-medium;
   }
-}
 
-.content {
-  padding: $space-lg $space-lg $space-xl;
-  display: flex; flex-direction: column; gap: $space-lg;
-}
-
-// --- IDENTITY SECTION ---
-.identity-card {
-  display: flex; align-items: center; gap: $space-xl; padding: $space-md;
-  
-  .avatar-wrapper {
-    position: relative; width: 100px; height: 100px;
-    background: $white; border-radius: 50%; padding: 4px;
-    box-shadow: 0 0 0 2px $primary-color, 0 4px 12px rgba(0,0,0,0.1);
-
-    .avatar-image { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-
-    .edit-badge {
-      position: absolute; bottom: 0; right: 0;
-      background: $primary-color; color: $white; border: 2px solid $white;
-      border-radius: 50%; width: 30px; height: 30px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      span { font-size: 16px; }
-    }
-  }
-
-  .user-titles {
-    .user-name {
-      margin: 0; font-family: $font-family-title; font-size: $font-size-2xl;
-      color: $black; line-height: 1.1;
-      .user-lastname { font-weight: $font-weight-bold; text-transform: uppercase; }
-    }
+  &__value {
+    font-size: $font-size-sm;
+    color: $gray-900;
+    font-weight: $font-weight-medium;
+    text-align: right;
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
-// --- INFO BOX ---
-.info-box {
-  background: $white;
-  border: 1px solid rgba($primary-dark, 0.2);
-  border-radius: 35px; // Bords très arrondis
-  padding: $space-xl;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+.btn-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-sm;
+  width: 100%;
+  padding: 13px;
+  background: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: $radius-full;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
 
-  &__title {
-    text-align: center;
-    font-family: $font-family-title;
-    font-size: $font-size-lg;
-    margin-bottom: $space-xl;
-    color: $black;
+  span {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: $primary-dark;
+    color: $white;
   }
 }
 
-.field-group { display: flex; flex-direction: column; gap: $space-md; }
+.btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-sm;
+  background: none;
+  border: 1.5px solid rgba($danger, 0.3);
+  border-radius: $radius-full;
+  padding: 13px;
+  color: $danger;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  width: 100%;
 
-.field-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: $space-sm $space-xs;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-  
-  .field-content {
-    display: flex; gap: 8px; font-family: $font-family-base;
-    .field-label { color: $black; font-weight: $font-weight-medium; }
-    .field-value { color: #555; }
+  span {
+    font-size: 18px;
   }
 
-  .field-actions { display: flex; gap: $space-md; align-items: center; }
-
-  .btn-icon-field {
-    background: none; border: none; color: $primary-color;
-    cursor: pointer; padding: 0;
-    span { font-size: 20px; }
-    &:hover { color: $primary-dark; }
+  &:hover {
+    background: rgba($danger, 0.05);
+    border-color: $danger;
   }
-
-  &--password .field-value { font-family: monospace; color: $primary-dark; }
-}
-
-// --- LOGOUT ---
-.btn-logout-link {
-  margin-top: $space-xl;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: none; border: none;
-  color: $primary-color;
-  font-family: $font-family-base; font-weight: $font-weight-medium;
-  text-decoration: underline; cursor: pointer;
-  align-self: center; padding: $space-md;
-
-  &:hover { color: $primary-dark; text-decoration: none; }
 }
 </style>

@@ -1,24 +1,29 @@
 <script setup>
-  import { useAuthStore } from '@/services/store/useAuthStore'
-  import { useRouter, useRoute } from 'vue-router'
-  import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useAuthStore } from '@/services/store/useAuthStore'
+import { useRouter, useRoute } from 'vue-router'
+import { ref, computed } from 'vue'
 
-  const router = useRouter()
-  const route = useRoute()
-  const authStore = useAuthStore()
-  
-  const isMenuOpen = ref(false)
-  const isActivitiesOpen = ref(false)
+const { t, locale } = useI18n()
+const router = useRouter()
+const route = useRoute()
+const authStore = useAuthStore()
 
-  // Logique dynamique pour le bouton du Header
-  // On vérifie si le nom de la route actuelle est 'signup'
-  const isSignUpPage = computed(() => route.name === 'signup')
+const isMenuOpen = ref(false)
+const isSignUpPage = computed(() => route.name === 'signup')
 
-  async function handleDisconnect() {
-    isMenuOpen.value = false
-    await authStore.logout()
-    router.push({ name: 'landing' })
-  }
+function switchLocale() {
+  const next = locale.value === 'fr' ? 'en' : 'fr'
+  const currentPath = route.fullPath
+  const newPath = currentPath.replace(/^\/(fr|en)/, `/${next}`)
+  router.push(newPath)
+}
+
+async function handleDisconnect() {
+  isMenuOpen.value = false
+  await authStore.logout()
+  router.push({ name: 'landing' })
+}
 </script>
 
 <template>
@@ -34,34 +39,30 @@
         <router-link to="/">VESTA</router-link>
       </div>
 
-      <div v-if="authStore.user" class="header__user-section">
-        <router-link :to="{ name: 'add-activity' }" class="icon-link">
-          <span class="material-symbols-outlined">add</span>
-        </router-link>
-        
-        <router-link :to="{ name: 'profile' }" class="profile-link">
-          <img 
-            :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'" 
-            :alt="`${authStore.user.name}_profile_picture`"
-          >
-        </router-link>
-      </div>
+      <div class="header__right">
+        <button class="lang-switch" @click="switchLocale"
+          :title="locale === 'fr' ? 'Switch to English' : 'Passer en français'">
+          {{ locale === 'fr' ? 'FR 🇫🇷' : 'EN 🇬🇧' }}
+        </button>
 
-      <div v-else>
-        <router-link 
-          v-if="isSignUpPage" 
-          :to="{ name: 'signin' }" 
-          class="btn-primary"
-        >
-          Se connecter
-        </router-link>
-        <router-link 
-          v-else 
-          :to="{ name: 'signup' }" 
-          class="btn-primary"
-        >
-          S'inscrire
-        </router-link>
+        <div v-if="authStore.user" class="header__user-section">
+          <router-link :to="{ name: 'add-activity' }" class="icon-link">
+            <span class="material-symbols-outlined">add</span>
+          </router-link>
+          <router-link :to="{ name: 'profile' }" class="profile-link">
+            <img :src="authStore.user?.profilePicture ?? '/images/placeholders/default-profile-picture.png'"
+              :alt="`${authStore.user.name}_profile_picture`">
+          </router-link>
+        </div>
+
+        <div v-else>
+          <router-link v-if="isSignUpPage" :to="{ name: 'signin' }" class="btn-primary">
+            {{ t('nav.signin_btn') }}
+          </router-link>
+          <router-link v-else :to="{ name: 'signup' }" class="btn-primary">
+            {{ t('nav.signup_btn') }}
+          </router-link>
+        </div>
       </div>
     </div>
 
@@ -77,33 +78,22 @@
           </button>
 
           <nav class="nav-mobile__links">
-            <router-link to="/" @click="isMenuOpen = false">Accueil</router-link>
-            
-            <div class="nav-mobile__dropdown">
-              <button @click="isActivitiesOpen = !isActivitiesOpen" class="dropdown-trigger">
-                Activités
-                <span class="arrow" :class="{ 'arrow--open': isActivitiesOpen }">▼</span>
-              </button>
-              
-              <Transition name="expand">
-                <div v-if="isActivitiesOpen" class="dropdown-content">
-                  <router-link to="/activites/transport" @click="isMenuOpen = false">Transport</router-link>
-                  <router-link to="/activites/nourriture" @click="isMenuOpen = false">Nourriture</router-link>
-                  <router-link to="/activites/shoppingq" @click="isMenuOpen = false">Shopping</router-link>
-                </div>
-              </Transition>
-            </div>
+            <router-link to="/" @click="isMenuOpen = false">{{ t('nav.home') }}</router-link>
+            <router-link :to="{ name: 'profile' }" @click="isMenuOpen = false">{{ t('nav.profile') }}</router-link>
+            <router-link to="profile/edit" @click="isMenuOpen = false">{{ t('nav.settings') }}</router-link>
 
-            <router-link :to="{ name: 'profile' }" @click="isMenuOpen = false">Profil</router-link>
-            <router-link to="/parametres" @click="isMenuOpen = false">Paramètres</router-link>
-            
             <hr class="nav-mobile__divider" />
 
-            <router-link to="/assistance" class="small-link" @click="isMenuOpen = false">Assistance</router-link>
-            <router-link to="/mentions-legales" class="small-link" @click="isMenuOpen = false">Mentions légales</router-link>
+            <router-link to="#" class="small-link" @click="isMenuOpen = false">{{ t('nav.assistance') }}</router-link>
+            <router-link to="#" class="small-link" @click="isMenuOpen = false">{{ t('nav.legal') }}</router-link>
 
-            <button v-if="authStore.user" class="btn-logout" @click="handleDisconnect">Déconnexion</button>
-            <router-link v-else :to="{ name: 'signin' }" class="small-link" @click="isMenuOpen = false">Connexion</router-link>
+            <button class="lang-switch-menu" @click="switchLocale">
+              {{ locale === 'fr' ? '🇫🇷 Français' : '🇬🇧 English' }}
+            </button>
+
+            <button v-if="authStore.user" class="btn-logout" @click="handleDisconnect">{{ t('nav.logout') }}</button>
+            <router-link v-else :to="{ name: 'signin' }" class="small-link" @click="isMenuOpen = false">{{
+              t('nav.login') }}</router-link>
           </nav>
         </div>
       </div>
@@ -116,7 +106,7 @@
 
 .header {
   height: 60px;
-  background: $gray-100;
+  background: #e9f0e8;
   border-bottom: 1px solid $gray-200;
   position: sticky;
   top: 0;
@@ -139,7 +129,7 @@
     gap: 4px;
     padding: $space-sm;
     margin-left: -$space-sm;
-    
+
     .burger-bar {
       width: 22px;
       height: 2px;
@@ -154,12 +144,18 @@
     color: $primary-light;
     flex-grow: 1;
     margin-left: $space-sm;
-    
+
     a {
       color: inherit;
       letter-spacing: 1px;
       text-decoration: none;
     }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
   }
 
   &__user-section {
@@ -183,6 +179,23 @@
   }
 }
 
+.lang-switch {
+  background: none;
+  border: 1px solid $gray-200;
+  border-radius: $radius-full;
+  padding: 3px 8px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: $gray-500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+  }
+}
+
 .btn-primary {
   background-color: rgba($primary-color, 0.8);
   color: $white;
@@ -199,7 +212,6 @@
   }
 }
 
-// Mobile Menu
 .nav-mobile {
   position: fixed;
   top: 0;
@@ -242,7 +254,7 @@
     flex-direction: column;
     gap: $space-lg;
 
-    a, .dropdown-trigger {
+    a {
       font-size: $font-size-md;
       color: $black;
       text-decoration: none;
@@ -273,38 +285,38 @@
   }
 }
 
-// Dropdown
-.dropdown-trigger {
+.lang-switch-menu {
   background: none;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  border: 1px solid $gray-200;
+  border-radius: $radius-full;
+  padding: 6px 14px;
+  font-size: $font-size-sm;
+  color: $gray-900;
   cursor: pointer;
+  transition: border-color 0.2s;
 
-  .arrow {
-    font-size: 0.7rem;
-    transition: transform 0.3s;
-    &--open { transform: rotate(180deg); }
+  &:hover {
+    border-color: $primary-color;
   }
 }
 
-.dropdown-content {
-  display: flex;
-  flex-direction: column;
-  padding-left: $space-md;
-  gap: $space-md;
-  margin-top: $space-md;
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
 }
 
-// Transitions
-.slide-enter-active, .slide-leave-active { transition: transform 0.3s ease; }
-.slide-enter-from, .slide-leave-to { transform: translateX(-100%); }
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(-100%);
+}
 
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
 
-.expand-enter-active, .expand-leave-active { transition: all 0.3s ease; max-height: 150px; overflow: hidden; }
-.expand-enter-from, .expand-leave-to { max-height: 0; opacity: 0; }
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

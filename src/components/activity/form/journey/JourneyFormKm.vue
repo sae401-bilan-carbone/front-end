@@ -1,115 +1,112 @@
 <script setup>
-  import { useActivityStore } from '@/services/store/useActivityStore'
-import PreviousButton from '../ui/PreviousButton.vue';
+import { useI18n } from 'vue-i18n'
+import { useActivityStore } from '@/services/store/useActivityStore'
+import PreviousButton from '../ui/PreviousButton.vue'
 
-  const activityStore = useActivityStore()
+const { t } = useI18n()
+const activityStore = useActivityStore()
 
-  function handleSubmit() {
-    activityStore.step++
-  }
+function handleSubmit() { activityStore.step++ }
 </script>
 
 <template>
-  <h4>Distance en km</h4>
-
-  <form @submit.prevent="handleSubmit">
-
-    <!--  Card -->
-    <div class="km-card">
-
-      <!-- Valeur -->
-      <div class="km-value">
-        {{ activityStore.data.journey.distance }} km
-      </div>
-
-      <!-- Slider -->
-      <input
-        type="range"
-        min="0"
-        max="500"
-        step="1"
-        v-model="activityStore.data.journey.distance"
-        class="slider"
-      />
-
-    </div>
-
-    <div class="actions">
-      <PreviousButton />
-
-      <button type="submit">
-        Suivant
-      </button>
-    </div>
-
-  </form>
+  <h4 class="form-title">{{ t('form.journey.distance') }}</h4>
+  <div class="km-display">
+    <span class="km-display__value">{{ activityStore.data.journey.distance ?? 0 }}</span>
+    <span class="km-display__unit">{{ t('common.units.km') }}</span>
+  </div>
+  <input type="range" min="0" max="500" step="1" v-model="activityStore.data.journey.distance" class="slider" />
+  <div class="form-nav">
+    <PreviousButton />
+    <button class="btn-next" @click="handleSubmit">{{ t('common.next') }}</button>
+  </div>
 </template>
-<style scoped>
-h4 {
-  font-size: 14px;
-  margin-bottom: 15px;
+
+<style lang="scss" scoped>
+@use "@/assets/styles/variables" as *;
+
+.form-title {
+  font-family: $font-family-title;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $gray-900;
+  margin-bottom: $space-lg;
+  text-align: center;
 }
 
-/* 🟩 Card */
-.km-card {
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
+.km-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: $space-xs;
+  margin-bottom: $space-lg;
+
+  &__value {
+    font-family: $font-family-title;
+    font-size: 2.5rem;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+    line-height: 1;
+  }
+
+  &__unit {
+    font-size: $font-size-md;
+    color: $gray-500;
+    font-weight: $font-weight-medium;
+  }
 }
 
-/* 🔢 Valeur KM */
-.km-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: #4CAF50;
-  margin-bottom: 15px;
-}
-
-/* 🎚️ Slider */
 .slider {
   width: 100%;
   -webkit-appearance: none;
-  height: 6px;
-  border-radius: 10px;
-  background: #ddd;
+  appearance: none;
+  height: 4px;
+  border-radius: $radius-full;
+  background: $gray-200;
   outline: none;
+  margin-bottom: $space-xl;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: $primary-color;
+    cursor: pointer;
+    border: 3px solid $white;
+    box-shadow: 0 0 0 1.5px $primary-color, $shadow-sm;
+  }
+
+  &::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: $primary-color;
+    cursor: pointer;
+    border: 3px solid $white;
+  }
 }
 
-/* curseur */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
-
-/* Firefox */
-.slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
-
-/* boutons */
-.actions {
+.form-nav {
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
-button {
-  padding: 8px 16px;
-  border-radius: 20px;
+.btn-next {
+  background: $primary-color;
+  color: $white;
   border: none;
-}
+  border-radius: $radius-full;
+  padding: 10px $space-lg;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: background 0.2s;
 
-button[type="submit"] {
-  background: #4CAF50;
-  color: white;
+  &:hover {
+    background: $primary-dark;
+  }
 }
 </style>

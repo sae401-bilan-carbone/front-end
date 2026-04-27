@@ -1,3 +1,10 @@
+<script setup>
+import { useI18n } from 'vue-i18n'
+import { Instagram, Linkedin, Youtube, Facebook, Twitter } from 'lucide-vue-next'
+
+const { t } = useI18n()
+</script>
+
 <template>
   <footer class="footer">
     <div class="footer__container">
@@ -23,41 +30,26 @@
       </div>
 
       <nav class="footer__nav">
-        <router-link to="/assistance">Assistance</router-link>
-        <router-link to="/entreprise">Entreprise</router-link>
-        <router-link to="/partenaires">Centre partenaires</router-link>
-        <router-link to="/emplois">Offres d'emploi</router-link>
-        <router-link to="/presse">Presse</router-link>
+        <router-link to="#">{{ t('footer.assistance') }}</router-link>
+        <router-link to="#">{{ t('footer.company') }}</router-link>
+        <router-link to="#">{{ t('footer.partners') }}</router-link>
+        <router-link to="#">{{ t('footer.jobs') }}</router-link>
+        <router-link to="#">{{ t('footer.press') }}</router-link>
       </nav>
 
       <nav class="footer__nav footer__nav--legal">
-        <router-link to="/confidentialite">Confidentialité</router-link>
-        <router-link to="/cookies">Politique d'utilisation des cookies</router-link>
-        <router-link to="/donnees">Ne pas partager mes infos personnelles</router-link>
-        <router-link to="/cgv">Conditions générales</router-link>
+        <router-link to="#">{{ t('footer.privacy') }}</router-link>
+        <router-link to="#">{{ t('footer.cookies') }}</router-link>
+        <router-link to="#">{{ t('footer.no_share') }}</router-link>
+        <router-link to="#">{{ t('footer.terms') }}</router-link>
       </nav>
-
-      <div class="footer__auth">
-        <router-link to="/login" class="link-login">Se connecter</router-link>
-      </div>
     </div>
   </footer>
 </template>
 
-<script setup>
-// Importation des icônes Lucide
-import { 
-  Instagram, 
-  Linkedin, 
-  Youtube, 
-  Facebook, 
-  Twitter 
-} from 'lucide-vue-next';
-</script>
-
 <style lang="scss" scoped>
 .footer {
-  background-color: $gray-200; // Gris clair du design
+  background-color: #e9f0e8;
   padding: $space-xl $space-lg;
   color: $black;
 
@@ -65,7 +57,7 @@ import {
     display: flex;
     flex-direction: column;
     gap: $space-xl;
-    max-width: 400px; // Garde le contenu serré à gauche comme sur l'image
+    max-width: 400px;
   }
 
   &__logo {
@@ -83,11 +75,11 @@ import {
     margin-bottom: $space-sm;
 
     .social-link {
-      color: $black; // L'icône Lucide hérite de cette couleur
+      color: $black;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.2s ease, color 0.2s ease;
+      transition: transform 0.2s, color 0.2s;
 
       &:hover {
         color: $primary-color;
@@ -115,8 +107,8 @@ import {
 
     &--legal {
       margin-top: $space-sm;
-      gap: $space-sm; // Espacement plus serré pour les mentions légales
-      
+      gap: $space-sm;
+
       a {
         font-size: $font-size-sm;
       }

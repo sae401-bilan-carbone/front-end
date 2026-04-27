@@ -1,59 +1,50 @@
 <script setup>
-  import { useActivityStore } from '@/services/store/useActivityStore'
-  import activityConfig from '../../../../config/activity'
+import { useI18n } from 'vue-i18n'
+import { useActivityStore } from '@/services/store/useActivityStore'
+import activityConfig from '../../../../config/activity'
 import PreviousButton from '../ui/PreviousButton.vue'
 
-  const activityStore = useActivityStore()
+const { t } = useI18n()
+const activityStore = useActivityStore()
 
-  function radioHandle(energy) {
-    activityStore.data.journey.energy = energy
-    activityStore.step++
-  }
+function radioHandle(energy) {
+  activityStore.data.journey.energy = energy
+  activityStore.step++
+}
+
+function tEnergy(e) { return t(`activity.energy.${e.replaceAll(" ", "_")}`) }
 </script>
 
 <template>
-  <h4>Energie utilisée</h4>
-
-  <div v-for="energy in activityConfig.form.journey.steps[2].energy">
-
-    <!-- input AVANT -->
-    <input
-      type="radio"
-      name="vehicule-energy"
-      :id="energy"
-      :value="energy"
-      @change="radioHandle(energy)"
-    />
-
-    <!-- label APRÈS -->
-    <label :for="energy" class="choice-btn">
-      {{ energy }}
-    </label>
-
+  <h4 class="form-title">{{ t('form.journey.energy_type') }}</h4>
+  <div class="choice-list">
+    <div v-for="energy in activityConfig.form.journey.steps[2].energy" :key="energy">
+      <input type="radio" name="vehicule-energy" :id="`en-${energy}`" :value="energy" @change="radioHandle(energy)" />
+      <label :for="`en-${energy}`" class="choice-btn">{{ tEnergy(energy) }}</label>
+    </div>
   </div>
-
-  <div class="actions">
+  <div class="form-nav">
     <PreviousButton />
   </div>
 </template>
 
-<style scoped>
-h4 {
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-button {
-  background: #ddd;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
+<style lang="scss" scoped>
+@use "@/assets/styles/variables" as *;
+
+.form-title {
+  font-family: $font-family-title;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $gray-900;
+  margin-bottom: $space-lg;
+  text-align: center;
 }
 
-button:hover {
-  background: #ccc;
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  margin-bottom: $space-lg;
 }
 
 input[type="radio"] {
@@ -63,23 +54,32 @@ input[type="radio"] {
 .choice-btn {
   display: block;
   width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-
-  border-radius: 25px;
-  border: 1px solid #4CAF50;
-  background: white;
-
+  padding: 13px $space-md;
+  border-radius: $radius-full;
+  border: 1.5px solid $gray-200;
+  background: $white;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $gray-900;
   cursor: pointer;
-  transition: all 0.2s;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+  }
 }
 
-input[type="radio"]:checked + .choice-btn {
-  background: #4CAF50;
-  color: white;
+input[type="radio"]:checked+.choice-btn {
+  background: $primary-color;
+  border-color: $primary-color;
+  color: $white;
 }
 
-.actions {
-  margin-top: 20px;
+.form-nav {
+  display: flex;
+  justify-content: flex-start;
 }
 </style>

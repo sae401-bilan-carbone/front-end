@@ -1,7 +1,7 @@
 import config from '../../config/config'
 
 class HttpClient {
-  constructor(baseUrl = config.API_BASE)  {
+  constructor(baseUrl = config.API_BASE) {
     this.baseUrl = baseUrl
   }
 
@@ -14,31 +14,33 @@ class HttpClient {
       'Content-Type': 'application/json',
       ...customHeaders
     }
-
     const token = this.getToken()
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
     }
-
     return headers
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`
-
-    const config = {
+    const cfg = {
       headers: this.getHeaders(options.headers),
       ...options
     }
 
-    const response = await fetch(url, config)
+    const response = await fetch(url, cfg)
 
-    if (response.status === 401) {
-      // localStorage.removeItem('auth_token')
+    if (response.status === 204 || response.headers.get('content-length') === '0') {
+      if (!response.ok) {
+        const error = new Error(`API error on ${endpoint}: ${response.status}`)
+        error.status = response.status
+        throw error
+      }
+      return null
     }
 
     const data = await response.json()
-    
+
     if (!response.ok) {
       const error = new Error(data.message || `API error on ${endpoint}: ${response.status}`)
       error.data = data
@@ -49,52 +51,24 @@ class HttpClient {
     return data
   }
 
-  get(endpoint, body) {
-    return this.request(
-      endpoint,
-      {
-        method: 'GET'
-      }
-    )
+  get(endpoint) {
+    return this.request(endpoint, { method: 'GET' })
   }
 
   post(endpoint, body) {
-    return this.request(
-      endpoint,
-      {
-        method: 'POST',
-        body: JSON.stringify(body)
-      }
-    )
+    return this.request(endpoint, { method: 'POST', body: JSON.stringify(body) })
   }
 
   put(endpoint, body) {
-    return this.request(
-      endpoint,
-      {
-        method: 'PUT',
-        body: JSON.stringify(body)
-      }
-    )
+    return this.request(endpoint, { method: 'PUT', body: JSON.stringify(body) })
   }
 
   patch(endpoint, body) {
-    return this.request(
-      endpoint,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(body)
-      }
-    )
+    return this.request(endpoint, { method: 'PATCH', body: JSON.stringify(body) })
   }
 
   delete(endpoint) {
-    return this.request(
-      endpoint,
-      {
-        method: 'DELETE'
-      }
-    )
+    return this.request(endpoint, { method: 'DELETE' })
   }
 }
 

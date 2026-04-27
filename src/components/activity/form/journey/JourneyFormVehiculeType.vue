@@ -1,89 +1,83 @@
 <script setup>
-  import { useActivityStore } from '@/services/store/useActivityStore'
-  import activityConfig from '../../../../config/activity'
+import { useI18n } from 'vue-i18n'
+import { useActivityStore } from '@/services/store/useActivityStore'
+import activityConfig from '../../../../config/activity'
 import PreviousButton from '../ui/PreviousButton.vue'
 
-  const activityStore = useActivityStore()
+const { t } = useI18n()
+const activityStore = useActivityStore()
 
-  function radioHandle(type) {
-    activityStore.data.journey.vehicule = type
-    activityStore.step++
-  }
+function radioHandle(type) {
+  activityStore.data.journey.vehicule = type
+  activityStore.step++
+}
 </script>
 
 <template>
-  <h4>Type de véhicule</h4>
-
-  <div v-for="type in activityConfig.form.journey.steps[0].types">
-
-    <!-- input AVANT -->
-    <input
-      type="radio"
-      name="vehicule-type"
-      :id="type"
-      :value="type"
-      @change="radioHandle(type)"
-    />
-
-    <!-- label APRÈS + class -->
-    <label :for="type" class="choice-btn">
-      {{ type }}
-    </label>
-
+  <h4 class="form-title">{{ t('form.journey.vehicle_type') }}</h4>
+  <div class="choice-list">
+    <div v-for="type in activityConfig.form.journey.steps[0].types" :key="type">
+      <input type="radio" name="vehicule-type" :id="`vt-${type}`" :value="type" @change="radioHandle(type)" />
+      <label :for="`vt-${type}`" class="choice-btn">{{ t(`activity.vehicles.${type}`) }}</label>
+    </div>
   </div>
-
-  <div class="actions">
+  <div class="form-nav">
     <PreviousButton />
   </div>
 </template>
 
-<style scoped>
-h4 {
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-button {
-  background: #ddd;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
+<style lang="scss" scoped>
+@use "@/assets/styles/variables" as *;
+
+.form-title {
+  font-family: $font-family-title;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $gray-900;
+  margin-bottom: $space-lg;
+  text-align: center;
 }
 
-button:hover {
-  background: #ccc;
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  margin-bottom: $space-lg;
 }
 
-/* cache les radios */
 input[type="radio"] {
   display: none;
 }
 
-/* bouton */
 .choice-btn {
   display: block;
   width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-
-  border-radius: 25px;
-  border: 1px solid #4CAF50;
-  background: white;
-
+  padding: 13px $space-md;
+  border-radius: $radius-full;
+  border: 1.5px solid $gray-200;
+  background: $white;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $gray-900;
   cursor: pointer;
-  transition: all 0.2s;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+  }
 }
 
-/* sélection */
-input[type="radio"]:checked + .choice-btn {
-  background: #4CAF50;
-  color: white;
+input[type="radio"]:checked+.choice-btn {
+  background: $primary-color;
+  border-color: $primary-color;
+  color: $white;
 }
 
-/* navigation */
-.actions {
-  margin-top: 20px;
+.form-nav {
+  display: flex;
+  justify-content: flex-start;
 }
 </style>

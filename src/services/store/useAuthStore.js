@@ -9,15 +9,16 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function initAuth() {
     loading.value = true
-
     try {
       const data = await AuthApi.getMe()
       user.value = data
 
+      const { useActivityStore } = await import('./useActivityStore')
+      const activityStore = useActivityStore()
+      await activityStore.fetchDashboardData()
     } catch (e) {
       AuthApi.logout()
       user.value = null
-
     } finally {
       loading.value = false
     }
@@ -26,7 +27,6 @@ export const useAuthStore = defineStore('auth', () => {
   async function editProfile(name) {
     loading.value = true
     error.value = null
-
     try {
       const data = await AuthApi.patchMe(name)
       user.value = data.user
@@ -41,11 +41,14 @@ export const useAuthStore = defineStore('auth', () => {
   async function signin(email, password) {
     loading.value = true
     error.value = null
-
     try {
-      await AuthApi.signin(email, password) 
+      await AuthApi.signin(email, password)
       const data = await AuthApi.getMe()
       user.value = data
+
+      const { useActivityStore } = await import('./useActivityStore')
+      const activityStore = useActivityStore()
+      await activityStore.fetchDashboardData()
     } catch(e) {
       error.value = e.message
       throw e
@@ -57,7 +60,6 @@ export const useAuthStore = defineStore('auth', () => {
   async function signup(email, password, name) {
     loading.value = true
     error.value = null
-
     try {
       await AuthApi.signup(email, password, name)
       const data = await AuthApi.getMe()
@@ -77,15 +79,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = () => !!user.value
 
-  return { 
-    user, 
-    loading, 
-    error, 
-    initAuth, 
-    editProfile,
-    signin,
-    signup,
-    logout,  
-    isAuthenticated 
+  return {
+    user, loading, error,
+    initAuth, editProfile, signin, signup, logout, isAuthenticated
   }
 })

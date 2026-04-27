@@ -6,27 +6,27 @@ export default {
     journey: {
       steps: [
         {
-          types: ['voiture', 'transport en commun', 'covoiturage']
+          types: ['car', 'bus', 'train', 'motorbike', 'plane']
         },
         {
           options: ['km', 'time']
         },
         {
-          energy: ['carburant', 'électrique', 'gaz naturel']
+          energy: ['fuel', 'electric', 'hydrogen', 'natural gaz', 'any']
         }
       ]
     },
     food: {
       steps: [
         {
-          meals: ['végétarien', 'viande', 'poisson']
+          meals: ['fish', 'red meat', 'white meat', 'vegetarian', 'vegan']
         }
       ]
     },
     shopping: {
       steps: [
         {
-          items: ['vêtements', 'electronique', 'courses']
+          items: ['courses', 'fashion', 'tech', 'furniture']
         }
       ]
     }
