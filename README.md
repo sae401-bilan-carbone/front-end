@@ -1,8 +1,10 @@
-# 🌱 VESTA — Carbon Tracker
+# 🌱 VESTA — Carbon Tracker (Frontend)
 
 [![My skills](https://skillicons.dev/icons?i=git,js,vuejs,mysql)](https://skillicons.dev)
 
 A mobile-first web app that lets users track and visualize their daily carbon footprint.
+
+Project available here: https://sae401.mmi24c16.mmi-troyes.fr/. 
 
 ---
 
