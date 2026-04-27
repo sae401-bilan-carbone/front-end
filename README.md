@@ -1,38 +1,67 @@
-# sae401-front-end
+# 🌱 VESTA — Carbon Tracker
 
-This template should help get you started developing with Vue 3 in Vite.
+[![My skills](https://skillicons.dev/icons?i=git,js,vuejs,mysql)](https://skillicons.dev)
 
-## Recommended IDE Setup
+A mobile-first web app that lets users track and visualize their daily carbon footprint.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Recommended Browser Setup
+## Tech Stack
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Vue 3** (Composition API) + **Vite**
+- **Pinia** — state management
+- **Vue Router** — routing with multilingual support (`/fr`, `/en`)
+- **Vue I18n** — FR / EN internationalization
+- **Chart.js** + **vue-chartjs** — data visualizations (Line, Doughnut, Bar, Pie)
+- **SCSS** — styles with centralized design tokens
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Features
 
-## Project Setup
+- Authentication (sign up / sign in)
+- Activity logging across 3 categories: **Journey**, **Food**, **Shopping**
+- Dashboard with stats, activity calendar and streak tracking
+- Stats page with charts (pie, bar, line)
+- Editable user profile
+- Dynamic language switching
 
-```sh
+---
+
+## Getting Started
+
+```bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+> The backend API is expected at `http://localhost:8000` (configurable in `src/config/config.js`).
 
-```sh
-npm run build
+---
+
+## Project Structure
+
 ```
+src/
+├── components/     # UI components (forms, layout, icons)
+├── views/          # Pages (Dashboard, Stats, Profile, Auth…)
+├── services/       # API (HttpClient, ActivityApi, AuthApi) + Pinia stores
+├── i18n/           # FR / EN translations
+├── config/         # App & activity config
+└── assets/         # SCSS styles + JSON simulation data
+```
+
+---
+
+## Configuration
+
+| File | Purpose |
+|---|---|
+| `src/config/config.js` | API base URL |
+| `src/config/activity.js` | Form categories and steps |
+
+## Tests
+
+| File | Purpose |
+|---|---|
+| `src/assets/json-simulation-api/` | Mock data for stats |
